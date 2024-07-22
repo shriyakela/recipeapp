@@ -3,22 +3,22 @@
 {% block content %}
 <div>
     <h1>Welcome to Your Recipe Dashboard</h1>
+    <a href="{{ url_for('views.create_group') }}" class="btn btn-primary">Create Group</a>
 </div>
 
-<div class="recipe-list">
-    <h2>Your Recipes are amazingggggg vvv </h2>
-    {% for recipe in user_recipes %}
-    <div class="recipe-card">
-        <h3>{{ recipe.recipe }}</h3>
-        {% if recipe.image_path %}
-        <img src="{{ url_for('static', filename=recipe.image_path) }}" alt="{{ recipe.recipe }}" style="width: 200px;">
-        {% endif %}
-        <p>{{ recipe.ingredients }}</p>
-        <p>{{ recipe.instructions }}</p>
-        <a href="{{ url_for('views.edit_recipe', recipe_id=recipe.id) }}">Edit</a>
-        <form action="{{ url_for('views.delete_recipe', recipe_id=recipe.id) }}" method="POST">
-            <button type="submit">Delete</button>
+<div class="group-list">
+    <h2>Your Groups</h2>
+    {% for group in groups %}
+    <div class="group-card">
+        <h3>{{ group.name }}</h3>
+        <p>Created by: {{ group.creator.username }}</p>
+        <p>{{ group.description }}</p>
+        <p>Status: {{ 'Public' if group.public else 'Private' }}</p>
+        <form action="{{ url_for('views.delete_group', group_id=group.id) }}" method="POST" style="display:inline;">
+            <button type="submit" class="btn btn-danger">Delete Group</button>
         </form>
+        <a href="{{ url_for('views.edit_group', group_id=group.id) }}" class="btn btn-warning">Edit Group</a>
+        <a href="{{ url_for('views.group_recipes', group_id=group.id) }}" class="btn btn-info">View Recipes</a>
     </div>
     {% endfor %}
 </div>
@@ -29,8 +29,7 @@
     <div class="recipe-card">
         <h3>{{ recipe.recipe }}</h3>
         {% if recipe.image_path %}
-        <!-- <img src="{{ url_for('static', filename=recipe.image_path) }}" alt="{{ recipe.recipe }}" style="width: 200px;"> -->
-        <img src="{{ url_for('static', filename=recipe.image_path) }}" alt="{{ recipe.recipe }}">
+        <img src="{{ url_for('static', filename=recipe.image_path) }}" alt="{{ recipe.recipe }}" style="width: 200px;">
         {% endif %}
         <p>{{ recipe.ingredients }}</p>
         <p>{{ recipe.instructions }}</p>

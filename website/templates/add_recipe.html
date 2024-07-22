@@ -9,7 +9,7 @@
     </div>
     <div>
         <label for="image">Recipe Image:</label>
-        <input type="file" name="image" accept="image/*" required>
+        <input type="file" id="image" name="image">
     </div>
     <div>
         <label for="ingredients">Ingredients:</label>
@@ -18,6 +18,19 @@
     <div>
         <label for="instructions">Instructions:</label>
         <textarea id="instructions" name="instructions" required></textarea>
+    </div>
+    <div>
+        <label for="group_id">Group:</label>
+        <select id="group_id" name="group_id" required>
+            <option value="">Select a group</option>
+            {% for group in groups %}
+                <option value="{{ group.id }}"{% if group.id|string == group_id|string %} selected{% endif %}>{{ group.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label for="new_group_name">Or create a new group:</label>
+        <input type="text" id="new_group_name" name="new_group_name">
     </div>
     <div>
         <label for="public">Make recipe public:</label>
