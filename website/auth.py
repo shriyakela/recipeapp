@@ -1,61 +1,78 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
-from .models import User
+from flask import Flask, Blueprint, request, jsonify
+from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
+from .models import User
 from . import db
 
+app = Flask(__name__)
+CORS(app)
+
 auth = Blueprint('auth', __name__)
+CORS(auth)
 
-@auth.route('/login', methods=['GET', 'POST'])
+@auth.route('/login', methods=['POST'])
 def login():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
+    data = request.get_json()
 
-        user = User.query.filter_by(email=email).first()
-        if user:
-            if check_password_hash(user.password, password):
-                flash('Logged in successfully!', category='success')
-                login_user(user, remember=True)
-                return redirect(url_for('views.home'))
-            else:
-                flash('Incorrect password, try again.', category='error')
+    if not data:
+        return jsonify({"message": "Invalid request data.", "category": "error"}), 400
+
+    email = data.get('email')
+    password = data.get('password')
+
+    # Add logging to debug incoming data
+    app.logger.debug(f"Login attempt with email: {email}")
+
+    if not email or not password:
+        return jsonify({"message": "Email and password are required.", "category": "error"}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if user:
+        if check_password_hash(user.password, password):
+            login_user(user, remember=True)
+            return jsonify({"email": user.email})
         else:
-            flash('Email does not exist.', category='error')
+            return jsonify({"message": "Incorrect password, try again.", "category": "error"}), 401
+    else:
+        return jsonify({"message": "Email does not exist.", "category": "error"}), 404
 
-    return render_template("login.html", user=current_user)
 
 @auth.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('auth.login'))
+    return jsonify({"message": "Logged out successfully!"})
 
-@auth.route('/signup', methods=['GET', 'POST'])
+@auth.route('/signup', methods=['POST'])
 def signup():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        username = request.form.get('username')
-        password1 = request.form.get('password1')
-        password2 = request.form.get('password2')
+    data = request.get_json()
+    email = data.get('email')
+    username = data.get('username')
+    password1 = data.get('password1')
+    password2 = data.get('password2')
 
-        user = User.query.filter_by(email=email).first()
-        if user:
-            flash('Email address already exists', category='error')
-        elif len(email) < 4:
-            flash('Email must be greater than 3 characters.', category='error')
-        elif len(username) < 2:
-            flash('Username must be greater than 1 character.', category='error')
-        elif password1 != password2:
-            flash('Passwords don\'t match.', category='error')
-        elif len(password1) < 7:
-            flash('Password must be at least 7 characters.', category='error')
-        else:
-            new_user = User(email=email, username=username, password=generate_password_hash(password1, method='pbkdf2:sha256'))
-            db.session.add(new_user)
-            db.session.commit()
-            login_user(new_user, remember=True)
-            flash('Account created successfully!', category='success')
-            return redirect(url_for('views.home'))
+    user = User.query.filter_by(email=email).first()
+    if user:
+        return jsonify({"message": "Email address already exists", "category": "error"}), 409
+    elif len(email) < 4:
+        return jsonify({"message": "Email must be greater than 3 characters.", "category": "error"}), 400
+    elif len(username) < 2:
+        return jsonify({"message": "Username must be greater than 1 character.", "category": "error"}), 400
+    elif password1 != password2:
+        return jsonify({"message": "Passwords don't match.", "category": "error"}), 400
+    elif len(password1) < 7:
+        return jsonify({"message": "Password must be at least 7 characters.", "category": "error"}), 400
+    else:
+        new_user = User(email=email, username=username, password=generate_password_hash(password1, method='pbkdf2:sha256'))
+        db.session.add(new_user)
+        db.session.commit()
+        login_user(new_user, remember=True)
+        return jsonify({"email": new_user.email, "username": new_user.username})
 
-    return render_template("signup.html", user=current_user)
+        # return jsonify({"message": "Account created successfully!", "category": "success", "user": {"email": new_user.email, "username": new_user.username}})
+
+app.register_blueprint(auth, url_prefix='/auth')
+
+if __name__ == '__main__':
+    app.run(debug=True)
