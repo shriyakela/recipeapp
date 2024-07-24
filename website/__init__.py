@@ -5,15 +5,19 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 
 db = SQLAlchemy()
+migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'fallback_secret_key')
+
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', r'sqlite:///C:\Development\hackathon\recipeapp\website\test.db')
+
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Add this line to suppress a warning
-    migrate = Migrate(app, db)
+    
 
     db.init_app(app)
+    migrate = Migrate(app, db)
 
     from .views import views
     from .auth import auth
