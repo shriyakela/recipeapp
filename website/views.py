@@ -37,6 +37,7 @@ def create_group():
     if request.method == 'POST':
         name = request.form.get('name')
         description = request.form.get('description')
+        public= request.form.get('public')
 
         if len(name) < 1:
             flash('Group name is too short!', category='error')
@@ -68,29 +69,6 @@ def edit_group(group_id):
     return render_template('edit_group.html', group=group, user=current_user)
 
 
-from flask import abort
-
-@views.route('/delete_recipe/<int:recipe_id>', methods=['POST'])
-@login_required
-def delete_recipe(recipe_id):
-    recipe = Data.query.get_or_404(recipe_id)
-    
-    if recipe.user_id != current_user.id:
-        abort(403)  # Forbidden
-
-    try:
-        # First, delete all ingredients associated with this recipe
-        Ingredient.query.filter_by(data_id=recipe.id).delete()
-        
-        # Then delete the recipe
-        db.session.delete(recipe)
-        db.session.commit()
-        flash('Recipe deleted successfully!', category='success')
-    except Exception as e:
-        db.session.rollback()
-        flash(f'An error occurred while deleting the recipe: {str(e)}', category='error')
-    
-    return redirect(url_for('views.group_recipes', group_id=recipe.group_id))
 
 
 
@@ -116,9 +94,9 @@ def add_recipe(group_id):
         return redirect(url_for('views.home'))
 
     group = Group.query.get_or_404(group_id)
-    if group.user_id != current_user.id:
-        flash('You do not have permission to add recipes to this group!', category='error')
-        return redirect(url_for('views.home'))
+    # if group.user_id != current_user.id:
+    #     flash('You do not have permission to add recipes to this group!', category='error')
+    #     return redirect(url_for('views.home'))
 
     if request.method == 'POST':
         recipe_name = request.form.get('name')
@@ -129,6 +107,7 @@ def add_recipe(group_id):
         cooking_time = request.form.get('cooking_time')
         difficulty_level = request.form.get('difficulty_level')
         recipe_type = request.form.get('recipe_type')
+        public= request.form.get('public')
 
         if not recipe_name or not ingredient_names or not instructions:
             flash('Recipe name, ingredients, and instructions are required!', category='error')
@@ -168,6 +147,31 @@ def add_recipe(group_id):
         return redirect(url_for('views.group_recipes', group_id=group_id))
 
     return render_template('add_recipe.html', user=current_user, group=group)
+
+
+from flask import abort
+
+@views.route('/delete_recipe/<int:recipe_id>', methods=['POST'])
+@login_required
+def delete_recipe(recipe_id):
+    recipe = Data.query.get_or_404(recipe_id)
+    
+    if recipe.user_id != current_user.id:
+        abort(403)  # Forbidden
+
+    try:
+        # First, delete all ingredients associated with this recipe
+        Ingredient.query.filter_by(data_id=recipe.id).delete()
+        
+        # Then delete the recipe
+        db.session.delete(recipe)
+        db.session.commit()
+        flash('Recipe deleted successfully!', category='success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'An error occurred while deleting the recipe: {str(e)}', category='error')
+    
+    return redirect(url_for('views.group_recipes', group_id=recipe.group_id))
 
 
 

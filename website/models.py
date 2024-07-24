@@ -8,7 +8,7 @@ class Group(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('created_groups', lazy=True))
     recipes = db.relationship('Data', backref='group', lazy=True)
-    public = db.Column(db.Boolean, default=False)
+    public = db.Column(db.Boolean)
 
 class Data(db.Model):
     id = db.Column(db.Integer, primary_key=True)
