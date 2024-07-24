@@ -198,45 +198,32 @@ def edit_group(group_id):
 #     # Render the form with group_id
 #     group_id = request.args.get('group_id', None)
 #     return render_template('add_recipe.html', user=current_user, groups=groups, group_id=group_id)
-
-@views.route('/add-recipe', methods=['GET', 'POST'])
+@views.route('/add-recipe/<int:group_id>', methods=['GET', 'POST'])
 @login_required
-def add_recipe():
-    groups = Group.query.filter_by(user_id=current_user.id).all()
+
+def add_recipe(group_id):
+    if group_id is None:
+        # If no group_id is provided, redirect to home or show an error
+        flash('Please select a group to add a recipe to.', category='error')
+        return redirect(url_for('views.home'))
+
+    group = Group.query.get_or_404(group_id)
+    if group.user_id != current_user.id:
+        flash('You do not have permission to add recipes to this group!', category='error')
+        return redirect(url_for('views.home'))
+
+    
+  
+
     if request.method == 'POST':
         recipe_name = request.form.get('name')
         ingredients = request.form.get('ingredients')
         instructions = request.form.get('instructions')
         recipe_image = request.files.get('image')
-        group_id = request.form.get('group_id')
-        new_group_name = request.form.get('new_group_name')
 
         if not recipe_name or not ingredients or not instructions:
             flash('Recipe name, ingredients, and instructions are required!', category='error')
-            return redirect(url_for('views.add_recipe'))
-
-        # Handle new group creation if necessary
-        if new_group_name:
-            new_group = Group(name=new_group_name, user_id=current_user.id)
-            db.session.add(new_group)
-            db.session.commit()
-            group_id = new_group.id
-        elif not group_id:
-            flash('Please select a group or create a new one!', category='error')
-            return redirect(url_for('views.add_recipe'))
-
-        # Handle recipe image saving
-        # if recipe_image:
-        #     filename = secure_filename(recipe_image.filename)
-        #     static_folder = os.path.join(current_app.root_path, 'static', 'images')
-        #     if not os.path.exists(static_folder):
-        #         os.makedirs(static_folder)
-        #     image_path = os.path.join(static_folder, filename)
-        #     recipe_image.save(image_path)
-        #     relative_image_path = os.path.join('static', 'images', filename)
-        # else:
-        #     relative_image_path = None
-
+            return redirect(url_for('views.add_recipe', group_id=group_id))
 
         if recipe_image:
             filename = secure_filename(recipe_image.filename)
@@ -249,27 +236,93 @@ def add_recipe():
         else:
             relative_image_path = None
 
-        # Create new recipe
-        try:
-            new_recipe = Data(
-                recipe=recipe_name,
-                image_path=relative_image_path,
-                ingredients=ingredients,
-                instructions=instructions,
-                user_id=current_user.id,
-                public=True,
-                group_id=int(group_id)
-            )
-            db.session.add(new_recipe)
-            db.session.commit()
-            flash(f'Recipe added to group {group_id}!', category='success')
-            return redirect(url_for('views.group_recipes', group_id=group_id))
-        except ValueError:
-            flash('Invalid group selected. Please try again.', category='error')
-            return redirect(url_for('views.add_recipe'))
+        new_recipe = Data(
+            recipe=recipe_name,
+            image_path=relative_image_path,
+            ingredients=ingredients,
+            instructions=instructions,
+            user_id=current_user.id,
+            public=True,
+            group_id=group_id
+        )
+        db.session.add(new_recipe)
+        db.session.commit()
+        flash(f'Recipe added to {group.name}!', category='success')
+        return redirect(url_for('views.group_recipes', group_id=group_id))
 
-    group_id = request.args.get('group_id')
-    return render_template('add_recipe.html', user=current_user, groups=groups, group_id=group_id)
+    return render_template('add_recipe.html', user=current_user, group=group)
+
+# @views.route('/add-recipe', methods=['GET', 'POST'])
+# @login_required
+# def add_recipe():
+#     groups = Group.query.filter_by(user_id=current_user.id).all()
+#     if request.method == 'POST':
+#         recipe_name = request.form.get('name')
+#         ingredients = request.form.get('ingredients')
+#         instructions = request.form.get('instructions')
+#         recipe_image = request.files.get('image')
+#         group_id = request.form.get('group_id')
+#         # new_group_name = request.form.get('new_group_name')
+
+#         if not recipe_name or not ingredients or not instructions:
+#             flash('Recipe name, ingredients, and instructions are required!', category='error')
+#             return redirect(url_for('views.add_recipe'))
+
+#         # Handle new group creation if necessary
+#         # if new_group_name:
+#         #     new_group = Group(name=new_group_name, user_id=current_user.id)
+#         #     db.session.add(new_group)
+#         #     db.session.commit()
+#         #     group_id = new_group.id
+#         # elif not group_id:
+#         #     flash('Please select a group or create a new one!', category='error')
+#         #     return redirect(url_for('views.add_recipe'))
+
+#         # Handle recipe image saving
+#         # if recipe_image:
+#         #     filename = secure_filename(recipe_image.filename)
+#         #     static_folder = os.path.join(current_app.root_path, 'static', 'images')
+#         #     if not os.path.exists(static_folder):
+#         #         os.makedirs(static_folder)
+#         #     image_path = os.path.join(static_folder, filename)
+#         #     recipe_image.save(image_path)
+#         #     relative_image_path = os.path.join('static', 'images', filename)
+#         # else:
+#         #     relative_image_path = None
+
+
+#         if recipe_image:
+#             filename = secure_filename(recipe_image.filename)
+#             static_folder = os.path.join(current_app.root_path, 'static')
+#             if not os.path.exists(static_folder):
+#                 os.makedirs(static_folder)
+#             image_path = os.path.join(static_folder, filename)
+#             recipe_image.save(image_path)
+#             relative_image_path = os.path.join('static', filename)
+#         else:
+#             relative_image_path = None
+
+#         # Create new recipe
+#         try:
+#             new_recipe = Data(
+#                 recipe=recipe_name,
+#                 image_path=relative_image_path,
+#                 ingredients=ingredients,
+#                 instructions=instructions,
+#                 user_id=current_user.id,
+#                 public=True,
+#                 group_id=int(group_id)
+#             )
+#             db.session.add(new_recipe)
+#             db.session.commit()
+#             flash(f'Recipe added to group {group_id}!', category='success')
+#             return redirect(url_for('views.group_recipes', group_id=group_id))
+#         except ValueError:
+#             flash('Invalid group selected. Please try again.', category='error')
+#             return redirect(url_for('views.add_recipe'))
+
+#     group_id = request.args.get('group_id')
+#     return render_template('add_recipe.html', user=current_user, groups=groups, group_id=group_id)
 
 # @views.route('/add-recipe', methods=['GET', 'POST'])
 # @login_required
@@ -390,7 +443,7 @@ def delete_recipe(recipe_id):
         flash('Recipe deleted!', category='success')
     else:
         flash('You do not have permission to delete this recipe!', category='error')
-    return redirect(url_for('views.home'))
+    return redirect(url_for('views.add_recipe'))
 
 
 @views.route('/delete-group/<int:group_id>', methods=['POST'])
@@ -403,14 +456,14 @@ def delete_group(group_id):
         flash('Group deleted!', category='success')
     else:
         flash('You do not have permission to delete this group!', category='error')
-    return redirect(url_for('views.home'))
+    return redirect(url_for('views.add_recipe'))
 @views.route('/edit-recipe/<int:recipe_id>', methods=['GET', 'POST'])
 @login_required
 def edit_recipe(recipe_id):
     recipe = Data.query.get(recipe_id)
     if not recipe or recipe.user_id != current_user.id:
         flash('You do not have permission to edit this recipe!', category='error')
-        return redirect(url_for('views.home'))
+        return redirect(url_for('views.add_recipe'))
 
     if request.method == 'POST':
         recipe_name = request.form.get('name')
@@ -430,6 +483,6 @@ def edit_recipe(recipe_id):
                 recipe.image_path = image_path
             db.session.commit()
             flash('Recipe updated!', category='success')
-            return redirect(url_for('views.home'))
+            return redirect(url_for('views.add_recipe'))
 
     return render_template('edit_recipe.html', recipe=recipe)

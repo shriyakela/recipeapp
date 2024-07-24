@@ -4,9 +4,8 @@
 <div>
     <h1>{{ group.name }}</h1>
     <p>{{ group.description }}</p>
-    <a href="{{ url_for('views.add_recipe') }}" class="btn btn-primary">Add Recipe</a>
+    <a href="{{ url_for('views.add_recipe', group_id=group.id) }}" class="btn btn-primary">Add Recipe</a>
 </div>
-
 <div class="recipe-list">
     <h2>Recipes in this Group</h2>
     {% for recipe in recipes %}
