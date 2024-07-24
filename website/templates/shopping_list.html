@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Shopping List</h1>
+<form method="POST">
+    <input type="text" name="ingredient" placeholder="Add Ingredient" required>
+    <button type="submit">Add</button>
+</form>
+
+<ul>
+    {% for ingredient in shopping_list %}
+    <li>
+        {{ ingredient }}
+        <form action="{{ url_for('views.remove_from_shopping_list') }}" method="POST" style="display:inline;">
+            <input type="hidden" name="ingredient" value="{{ ingredient }}">
+            <button type="submit">Remove</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Recipe Detail{% endblock %}
+{% block content %}
+
+<div>
+    <h1>{{ recipe.recipe }}</h1>
+
+    {% if recipe.image_path %}
+        <img src="{{ url_for('static', filename=recipe.image_path) }}" alt="{{ recipe.recipe }}" style="width: 300px;">
+    {% endif %}
+
+    <p><strong>Cooking Time:</strong> {{ recipe.cooking_time }} minutes</p>
+    <p><strong>Difficulty Level:</strong> {{ recipe.difficulty_level }}</p>
+    <p><strong>Recipe Type:</strong> {{ recipe.recipe_type }}</p>
+
+    <h3>Instructions:</h3>
+    <p>{{ recipe.instructions }}</p>
+</div>
+
+<div>
+    <h2>Ingredients</h2>
+    <ul>
+    {% for ingredient in ingredients %}
+        <li>
+            {{ ingredient.quantity }} {{ ingredient.name }}
+            <form action="{{ url_for('views.add_to_shopping_list') }}" method="POST" style="display: inline;">
+                <input type="hidden" name="ingredient_id" value="{{ ingredient.id }}">
+                <button type="submit" class="btn btn-sm btn-primary">Add to Shopping List</button>
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+
+<a href="{{ url_for('views.group_recipes', group_id=recipe.group_id) }}" class="btn btn-secondary">Back to Group Recipes</a>
+{% endblock %}

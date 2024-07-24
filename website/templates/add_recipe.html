@@ -1,25 +1,66 @@
 {% extends "base.html" %}
-{% block title %}Add Recipe{% endblock %}
 {% block content %}
-<h1>Add Recipe to {{ group.name }}</h1>
+<h1>Add Recipe</h1>
 <form method="POST" enctype="multipart/form-data">
-    <input type="hidden" name="group_id" value="{{ group.id }}">
-    <div>
+    <div class="form-group">
         <label for="name">Recipe Name:</label>
-        <input type="text" id="name" name="name" required>
+        <input type="text" class="form-control" id="name" name="name" required>
     </div>
-    <div>
-        <label for="image">Recipe Image:</label>
-        <input type="file" id="image" name="image">
+
+    <div id="ingredient-container">
+        <div class="ingredient-item">
+            <input type="text" name="ingredient_quantities[]" placeholder="Quantity" required>
+            <input type="text" name="ingredient_names[]" placeholder="Ingredient Name" required>
+        </div>
     </div>
-    <div>
-        <label for="ingredients">Ingredients:</label>
-        <textarea id="ingredients" name="ingredients" required></textarea>
-    </div>
-    <div>
+    <button type="button" id="add-ingredient">Add Ingredient</button>
+
+    <div class="form-group">
         <label for="instructions">Instructions:</label>
-        <textarea id="instructions" name="instructions" required></textarea>
+        <textarea class="form-control" id="instructions" name="instructions" required></textarea>
     </div>
-    <button type="submit">Add Recipe</button>
+
+    <div class="form-group">
+        <label for="image">Recipe Image:</label>
+        <input type="file" class="form-control-file" id="image" name="image">
+    </div>
+
+    <div class="form-group">
+        <label for="cooking_time">Cooking Time (minutes):</label>
+        <input type="number" class="form-control" id="cooking_time" name="cooking_time" required>
+    </div>
+
+    <div class="form-group">
+        <label for="difficulty_level">Difficulty Level:</label>
+        <select class="form-control" id="difficulty_level" name="difficulty_level" required>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="recipe_type">Recipe Type:</label>
+        <select class="form-control" id="recipe_type" name="recipe_type" required>
+            <option value="Vegetarian">Vegetarian</option>
+            <option value="Non-Vegetarian">Non-Vegetarian</option>
+            <option value="Vegan">Vegan</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Recipe</button>
 </form>
+
+<script>
+document.getElementById('add-ingredient').addEventListener('click', function() {
+    var container = document.getElementById('ingredient-container');
+    var newItem = document.createElement('div');
+    newItem.className = 'ingredient-item';
+    newItem.innerHTML = `
+        <input type="text" name="ingredient_quantities[]" placeholder="Quantity" required>
+        <input type="text" name="ingredient_names[]" placeholder="Ingredient Name" required>
+    `;
+    container.appendChild(newItem);
+});
+</script>
 {% endblock %}

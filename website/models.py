@@ -6,22 +6,28 @@ class Group(db.Model):
     name = db.Column(db.String(150))
     description = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    user = db.relationship('User', backref=db.backref('created_groups', lazy=True))  # Changed backref name to 'created_groups'
+    user = db.relationship('User', backref=db.backref('created_groups', lazy=True))
     recipes = db.relationship('Data', backref='group', lazy=True)
     public = db.Column(db.Boolean, default=False)
-
-
 
 class Data(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
+    cooking_time = db.Column(db.Integer, nullable=False)
+    difficulty_level = db.Column(db.String, nullable=False)
     recipe = db.Column(db.String(10000))
     image_path = db.Column(db.String(200))
-    ingredients = db.Column(db.Text)
+    ingredients = db.relationship('Ingredient', backref='data', lazy=True)  # Changed to relationship
     instructions = db.Column(db.Text)
+    recipe_type = db.Column(db.String, nullable=False)
     public = db.Column(db.Boolean, default=False)
 
+class Ingredient(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    quantity = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    data_id = db.Column(db.Integer, db.ForeignKey('data.id'), nullable=False)
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -29,4 +35,5 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
     recipes = db.relationship('Data', backref='user', lazy=True)
-    groups = db.relationship('Group', backref='creator', lazy=True)  # Ensure this matches the 'Group' model
+    groups = db.relationship('Group', backref='creator', lazy=True)
+    shopping_list = db.Column(db.Text, nullable=True)
