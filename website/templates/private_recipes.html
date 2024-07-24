@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Private Recipes</title>
+</head>
+<body>
+    <h1>My Private Recipes</h1>
+    <ul>
+        {% for recipe in recipes %}
+        <li>{{ recipe.recipe }} - {{ recipe.ingredients }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('views.profile') }}">Back to Profile</a>
+</body>
+</html>

@@ -25,8 +25,11 @@
                         <a class="nav-link" href="/logout">Logout</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('views.create_group') }}">Create Group</a>
+                        <a class="nav-link" href="{{ url_for('views.profile') }}">Profile</a>
                     </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('views.create_group') }}">Create Group</a>
+                    </li> -->
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="/login">Login</a>

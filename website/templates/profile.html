@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+</head>
+<body>
+    <h1>Welcome, {{ user.username }}!</h1>
+    <h2>
+    <a href="{{ url_for('views.public_recipes') }}">View My Public Recipes</a></h2>
+<h2>  <a href="{{ url_for('views.private_recipes') }}">View My Private Recipes</a></h2>
+</body>
+</html>
