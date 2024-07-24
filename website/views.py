@@ -11,12 +11,21 @@ views = Blueprint('views', __name__)
 @views.route('/')
 @login_required
 def home():
-    # Query for all public groups and private groups for the current user
+    # Get all public groups
     public_groups = Group.query.filter_by(public=True).all()
-    user_groups = Group.query.filter_by(user_id=current_user.id).all()
-    public_recipes = Data.query.join(Group).filter(Group.public == True).all()
     
-    return render_template("home.html", user=current_user, groups=user_groups + public_groups, public_recipes=public_recipes)
+    # Get all groups where the current user is the creator or where the user is a member of the group
+    user_groups = Group.query.filter((Group.user_id == current_user.id) | (Group.public == True)).all()
+
+    # Remove duplicates using a set or dict to ensure no group is displayed more than once
+    unique_groups = {group.id: group for group in user_groups}.values()
+    
+    # Get all public recipes in public groups
+    public_recipes = Data.query.join(Group).filter(Group.public == True).all()
+
+    return render_template("home.html", user=current_user, groups=unique_groups, public_recipes=public_recipes)
+
+
 @views.route('/group/<int:group_id>')
 @login_required
 def group_recipes(group_id):
@@ -27,7 +36,7 @@ def group_recipes(group_id):
         flash('You do not have permission to view this group!', category='error')
         return redirect(url_for('views.home'))
 
-    # Get recipes only if the group is public or if the user is a member
+    # Get recipes for the group
     recipes = Data.query.filter_by(group_id=group_id).all()
     
     return render_template("group_recipes.html", user=current_user, group=group, recipes=recipes)
@@ -37,18 +46,19 @@ def create_group():
     if request.method == 'POST':
         name = request.form.get('name')
         description = request.form.get('description')
-        public= request.form.get('public')
+        public = 'public' in request.form  # This will be True if the 'public' checkbox is checked
 
         if len(name) < 1:
             flash('Group name is too short!', category='error')
         else:
-            new_group = Group(name=name, description=description, user_id=current_user.id)
+            new_group = Group(name=name, description=description, user_id=current_user.id, public=public)
             db.session.add(new_group)
             db.session.commit()
             flash('Group created!', category='success')
             return redirect(url_for('views.home'))
 
     return render_template('create_group.html', user=current_user)
+
 
 @views.route('/edit-group/<int:group_id>', methods=['GET', 'POST'])
 @login_required
