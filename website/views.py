@@ -14,6 +14,7 @@ def home():
     public_recipes = Data.query.filter_by(public=True).filter(Data.user_id != current_user.id).all()
     return render_template("home.html", user=current_user, groups=groups, public_recipes=public_recipes)
 
+
 # @views.route('/')
 # @login_required
 # def home():
