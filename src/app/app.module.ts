@@ -23,6 +23,7 @@ import { RecipeDetailComponent } from './group/group-detail/recipes/recipe-detai
 import { RecipeEditComponent } from './group/group-detail/recipes/recipe-edit/recipe-edit.component';
 import { RecipeListComponent } from './group/group-detail/recipes/recipe-list/recipe-list.component';
 import { RecipeItemComponent } from './group/group-detail/recipes/recipe-list/recipe-item/recipe-item.component';
+import { MyrecipesComponent } from './myrecipes/myrecipes.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { RecipeItemComponent } from './group/group-detail/recipes/recipe-list/re
     RecipeEditComponent,
     RecipeListComponent,
     RecipeItemComponent,
+    MyrecipesComponent,
     
   ],
   imports: [
