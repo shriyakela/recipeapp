@@ -4,7 +4,9 @@
 <div>
     <h1>{{ group.name }}</h1>
     <p>{{ group.description }}</p>
+    {% if group.public or group.user_id == current_user.id %}
     <a href="{{ url_for('views.add_recipe', group_id=group.id) }}" class="btn btn-primary">Add Recipe</a>
+    {% endif %}
 </div>
 <div class="recipe-list">
     <h2>Recipes in this Group</h2>
@@ -16,11 +18,13 @@
         {% endif %}
         <p>{{ recipe.ingredients }}</p>
         <p>{{ recipe.instructions }}</p>
+        {% if recipe.user_id == current_user.id %}
         <a href="{{ url_for('views.edit_recipe', recipe_id=recipe.id) }}" class="btn btn-warning">Edit</a>
-        <a href="{{ url_for('views.recipe_detail', recipe_id=recipe.id) }}" class="btn btn-primary">View Recipe</a>
-        <form action="{{ url_for('views.delete_recipe', recipe_id=recipe.id) }}" method="POST">
+        <form action="{{ url_for('views.delete_recipe', recipe_id=recipe.id) }}" method="POST" style="display:inline;">
             <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this recipe?');">Delete</button>
         </form>
+        {% endif %}
+        <a href="{{ url_for('views.recipe_detail', recipe_id=recipe.id) }}" class="btn btn-primary">View Recipe</a>
     </div>
     {% endfor %}
 </div>

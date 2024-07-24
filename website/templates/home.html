@@ -7,7 +7,7 @@
 </div>
 
 <div class="group-list">
-    <h2>Your Groups</h2>
+    <h2>Groups</h2>
     {% for group in groups %}
     <div class="group-card">
         <h3>{{ group.name }}</h3>
@@ -23,18 +23,4 @@
     {% endfor %}
 </div>
 
-<!-- <div class="recipe-list">
-    <h2>Public Recipes</h2>
-    {% for recipe in public_recipes %}
-    <div class="recipe-card">
-        <h3>{{ recipe.recipe }}</h3>
-        {% if recipe.image_path %}
-        <img src="{{ url_for('static', filename=recipe.image_path) }}" alt="{{ recipe.recipe }}" style="width: 200px;">
-        {% endif %}
-        <p>{{ recipe.ingredients }}</p>
-        <p>{{ recipe.instructions }}</p>
-        <p>Shared by: {{ recipe.user.username }}</p>
-    </div>
-    {% endfor %}
-</div>
-{% endblock %} -->
+{% endblock %}

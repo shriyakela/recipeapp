@@ -11,21 +11,26 @@ views = Blueprint('views', __name__)
 @views.route('/')
 @login_required
 def home():
-    groups = Group.query.filter_by(user_id=current_user.id).all()
-    public_recipes = Data.query.filter_by(public=True).filter(Data.user_id != current_user.id).all()
-    return render_template("home.html", user=current_user, groups=groups, public_recipes=public_recipes)
-
+    # Query for all public groups and private groups for the current user
+    public_groups = Group.query.filter_by(public=True).all()
+    user_groups = Group.query.filter_by(user_id=current_user.id).all()
+    public_recipes = Data.query.join(Group).filter(Group.public == True).all()
+    
+    return render_template("home.html", user=current_user, groups=user_groups + public_groups, public_recipes=public_recipes)
 @views.route('/group/<int:group_id>')
 @login_required
 def group_recipes(group_id):
     group = Group.query.get_or_404(group_id)
-    if group.user_id != current_user.id:
+    
+    # Check if the group is public or if the user is the creator of the group
+    if not group.public and group.user_id != current_user.id:
         flash('You do not have permission to view this group!', category='error')
         return redirect(url_for('views.home'))
 
+    # Get recipes only if the group is public or if the user is a member
     recipes = Data.query.filter_by(group_id=group_id).all()
-    return render_template("group_recipes.html", user=current_user, group=group, recipes=recipes, group_id=group_id)
-
+    
+    return render_template("group_recipes.html", user=current_user, group=group, recipes=recipes)
 @views.route('/create-group', methods=['GET', 'POST'])
 @login_required
 def create_group():
