@@ -1,14 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Create Group</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Create Group{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Create Group</h1>
     <form method="POST">
-        <input type="text" name="name" placeholder="Group Name" required>
-        <textarea name="description" placeholder="Group Description"></textarea>
-        <button type="submit">Create Group</button>
+        <div class="mb-3">
+            <label for="name" class="form-label">Group Name</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Group Name" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Group Description</label>
+            <textarea class="form-control" id="description" name="description" placeholder="Group Description"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Group</button>
     </form>
-</body>
-</html>
+</div>
+{% endblock %}

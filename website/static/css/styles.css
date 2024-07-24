@@ -1,0 +1,112 @@
+/* Resetting margins, paddings, and box-sizing for a consistent look */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  /* General Body Styling */
+  body {
+    background: url("https://cdn.shopify.com/s/files/1/2303/2711/files/beginners-guide-to-instagram-worthy-food-photography-with-a-smartphone-8.jpg?v=1590931475") no-repeat center center fixed;
+    background-size: cover;
+    color: #0a0909;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Navbar Styling */
+  .navbar {
+    background-color: rgba(247, 239, 239, 0.7) !important;
+  }
+  
+  .navbar-brand {
+    color: #fff;
+    font-size: 1.5rem;
+  }
+  
+  .navbar-nav .nav-link {
+    color: #0f0f0f !important;
+    margin-right: 15px;
+  }
+  
+  .navbar-nav .nav-link:hover {
+    color: #f0f0f0 !important;
+  }
+  
+  /* Flash Messages Styling */
+  .alert {
+    margin-top: 20px;
+    font-size: 1rem;
+  }
+  
+  .alert-dismissible .btn-close {
+    filter: invert(1);
+  }
+  
+  /* Container Styling */
+  .container {
+    padding: 20px;
+    background: rgba(243, 240, 240, 0.5);
+    border-radius: 8px;
+  }
+  
+  /* Additional Styles */
+  h1, h2, h3, h4, h5, h6 {
+    color: #100f0f;
+  }
+  
+  /* Recipe and Group Card Styling */
+  .recipe-list, .group-list {
+    margin-top: 30px;
+  }
+  
+  .recipe-card, .group-card {
+    border: 1px solid #0e0d0d;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    color: #000;
+  }
+  
+  .recipe-card h3, .group-card h3 {
+    margin-bottom: 10px;
+  }
+  
+  .recipe-card p, .group-card p {
+    margin-bottom: 10px;
+  }
+  
+  .recipe-card img {
+    margin-bottom: 10px;
+    border-radius: 5px;
+  }
+  
+  /* Ensure responsive images */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Styling Buttons */
+  button {
+    background: #fff;
+    color: #000;
+    font-weight: 600;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 16px;
+    border: 2px solid transparent;
+    transition: 0.3s ease;
+  }
+  
+  button:hover {
+    color: #fff;
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.15);
+  }
+  
