@@ -30,8 +30,8 @@ export class HeaderComponent {
   }
 
   onMyRecipeClicked(){
-    this.groupService.isPrivate = true;
-    console.log("Private recipes group status",this.groupService.isPrivate)
+    // this.groupService.isPrivate = true;
+    // console.log("Private recipes group status",this.groupService.isPrivate)
   }
   saveRecipes(){
     this.dataService.storeRecipes();

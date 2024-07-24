@@ -17,7 +17,7 @@ interface AuthResponseData{
   providedIn: 'root'
 })
 export class AuthService {
-  user = new BehaviorSubject<User>(null);
+  user = new BehaviorSubject<User|null>(null);
   constructor(private http:HttpClient, private router:Router) { }
 
   onLogin(email:string, password:string){
