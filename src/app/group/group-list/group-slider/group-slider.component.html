@@ -1,0 +1,30 @@
+<!-- <div class="slider-container">
+    <button class="prev-button" (click)="prevSlide()">&#10094;</button>
+    
+    <div class="slider-wrapper">
+      <div class="slider-content" [ngStyle]="{'transform': 'translateX(-' + currentIndex * 20 + '%)'}">
+        <div class="slider-item" *ngFor="let group of groups">
+          <app-group-item [group]="group"></app-group-item>
+        </div>
+      </div>
+    </div>
+  
+    <button class="next-button" (click)="nextSlide()">&#10095;</button>
+  </div>
+   -->
+
+   <div class="slider-container">
+    <button class="prev-button" (click)="prevSlide()">&#10094;</button>
+    
+    <div class="slider-wrapper">
+      <div class="slider-content" [ngStyle]="{'transform': 'translateX(-' + (currentIndex * 20) + '%)'}">
+        <div class="slider-item" *ngFor="let group of groups">
+          <app-group-item [group]="group"></app-group-item>
+        </div>
+      </div>  
+    </div>
+  
+    <button class="next-button" (click)="nextSlide()">&#10095;</button>
+  </div>
+  
+  
