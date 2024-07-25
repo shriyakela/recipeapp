@@ -337,3 +337,8 @@ def add_to_shopping_list():
         flash('Invalid ingredient!', category='error')
 
     return redirect(url_for('views.recipe_detail', recipe_id=ingredient.data_id))
+
+
+@views.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
