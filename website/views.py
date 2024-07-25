@@ -14,16 +14,16 @@ def home():
     # Get all public groups
     public_groups = Group.query.filter_by(public=True).all()
     
-    # Get all groups where the current user is the creator or where the user is a member of the group
-    user_groups = Group.query.filter((Group.user_id == current_user.id) | (Group.public == True)).all()
-
-    # Remove duplicates using a set or dict to ensure no group is displayed more than once
-    unique_groups = {group.id: group for group in user_groups}.values()
     
-    # Get all public recipes in public groups
+    # user_groups = Group.query.filter((Group.user_id == current_user.id) | (Group.public == True)).all()
+
+    
+    # unique_groups = {group.id: group for group in user_groups}.values()
+    
+    
     public_recipes = Data.query.join(Group).filter(Group.public == True).all()
 
-    return render_template("home.html", user=current_user, groups=unique_groups, public_recipes=public_recipes)
+    return render_template("home.html", user=current_user, groups=public_groups, public_recipes=public_recipes)
 
 
 @views.route('/group/<int:group_id>')
@@ -254,6 +254,12 @@ def edit_recipe(recipe_id):
 @login_required
 def profile():
     return render_template('profile.html', user=current_user)
+@views.route('/profile/usergroups')
+@login_required
+def user_groups():
+    user_groups = Group.query.filter((Group.user_id == current_user.id) | (Group.public == True)).all()
+    return render_template('public_recipes.html', user=current_user, groups=user_groups)
+
 
 @views.route('/profile/public-recipes')
 @login_required

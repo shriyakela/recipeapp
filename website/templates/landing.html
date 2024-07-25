@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">Recipe App</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('views.profile') }}">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('views.dashboard') }}">Profile</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </nav>
+    
+
+    <div class="carousel">
+        <div class="list">
+            <div class="item active" style="--background: #EA3D41">
+                <div class="content">Strawberry</div>
+                <img src="{{ url_for('static', filename='img/fruit_strawberry.png') }}" class="fruit">
+            </div>
+            <div class="item" style="--background: #2D5643">
+                <div class="content">Avocado</div>
+                <img src="{{ url_for('static', filename='img/fruit_avocado.png') }}" class="fruit">
+            </div>
+            <div class="item hidden" style="--background: #E7A043">
+                <div class="content">Orange</div>
+                <img src="{{ url_for('static', filename='img/fruit_orange.png') }}" class="fruit">
+            </div>
+        </div>
+        <div class="leaves"></div>
+        <div class="mockup"></div>
+        <div class="shadow"></div>
+        <div class="arrow">
+            <button id="prev"><</button>
+            <button id="next">></button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
