@@ -6,9 +6,10 @@
     <h1>{{ recipe.recipe }}</h1>
 
     {% if recipe.image_path %}
-        <img src="{{ url_for('static', filename=recipe.image_path) }}" alt="{{ recipe.recipe }}" style="width: 300px;">
-    {% endif %}
-
+    <img src="{{ url_for('static', filename=recipe.image_path) }}" alt="{{ recipe.recipe }}" class="img-fluid">
+{% else %}
+    <p>No image available</p>
+{% endif %}
     <p><strong>Cooking Time:</strong> {{ recipe.cooking_time }} minutes</p>
     <p><strong>Difficulty Level:</strong> {{ recipe.difficulty_level }}</p>
     <p><strong>Recipe Type:</strong> {{ recipe.recipe_type }}</p>

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}My Groups{% endblock %}
+
+{% block content %}
+    <h1>My Groups</h1>
+    
+    {% if groups %}
+        <ul class="list-group">
+            {% for group in groups %}
+                <li class="list-group-item">
+                    <h5>{{ group.name }}</h5>
+                    <p>{{ group.description }}</p>
+                    {% if group.public %}
+                        <span class="badge bg-success">Public</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Private</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have not created any groups yet.</p>
+    {% endif %}
+{% endblock %}

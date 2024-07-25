@@ -96,6 +96,67 @@ def delete_group(group_id):
         flash('You do not have permission to delete this group!', category='error')
     return redirect(url_for('views.home'))
 
+# @views.route('/add-recipe/<int:group_id>', methods=['GET', 'POST'])
+# @login_required
+# def add_recipe(group_id):
+#     if group_id is None:
+#         flash('Please select a group to add a recipe to.', category='error')
+#         return redirect(url_for('views.home'))
+
+#     group = Group.query.get_or_404(group_id)
+#     # if group.user_id != current_user.id:
+#     #     flash('You do not have permission to add recipes to this group!', category='error')
+#     #     return redirect(url_for('views.home'))
+
+#     if request.method == 'POST':
+#         recipe_name = request.form.get('name')
+#         ingredient_quantities = request.form.getlist('ingredient_quantities[]')
+#         ingredient_names = request.form.getlist('ingredient_names[]')
+#         instructions = request.form.get('instructions')
+#         recipe_image = request.files.get('image')
+#         cooking_time = request.form.get('cooking_time')
+#         difficulty_level = request.form.get('difficulty_level')
+#         recipe_type = request.form.get('recipe_type')
+#         public= request.form.get('public')
+
+#         if not recipe_name or not ingredient_names or not instructions:
+#             flash('Recipe name, ingredients, and instructions are required!', category='error')
+#             return redirect(url_for('views.add_recipe', group_id=group_id))
+
+#         if recipe_image:
+#             filename = secure_filename(recipe_image.filename)
+#             static_folder = os.path.join(current_app.root_path, 'static')
+#             if not os.path.exists(static_folder):
+#                 os.makedirs(static_folder)
+#             image_path = os.path.join(static_folder, filename)
+#             recipe_image.save(image_path)
+#             relative_image_path = os.path.join('static', filename)
+#         else:
+#             relative_image_path = None
+
+#         new_recipe = Data(
+#             recipe=recipe_name,
+#             image_path=relative_image_path,
+#             instructions=instructions,
+#             user_id=current_user.id,
+#             public=True,
+#             group_id=group_id,
+#             cooking_time=cooking_time,
+#             difficulty_level=difficulty_level,
+#             recipe_type=recipe_type
+#         )
+#         db.session.add(new_recipe)
+#         db.session.commit()
+
+#         for quantity, name in zip(ingredient_quantities, ingredient_names):
+#             new_ingredient = Ingredient(quantity=quantity, name=name, data_id=new_recipe.id)
+#             db.session.add(new_ingredient)
+
+#         db.session.commit()
+#         flash(f'Recipe added to {group.name}!', category='success')
+#         return redirect(url_for('views.group_recipes', group_id=group_id))
+
+#     return render_template('add_recipe.html', user=current_user, group=group)
 @views.route('/add-recipe/<int:group_id>', methods=['GET', 'POST'])
 @login_required
 def add_recipe(group_id):
@@ -104,42 +165,39 @@ def add_recipe(group_id):
         return redirect(url_for('views.home'))
 
     group = Group.query.get_or_404(group_id)
-    # if group.user_id != current_user.id:
-    #     flash('You do not have permission to add recipes to this group!', category='error')
-    #     return redirect(url_for('views.home'))
 
     if request.method == 'POST':
         recipe_name = request.form.get('name')
         ingredient_quantities = request.form.getlist('ingredient_quantities[]')
         ingredient_names = request.form.getlist('ingredient_names[]')
         instructions = request.form.get('instructions')
-        recipe_image = request.files.get('image')
+        recipe_image = request.files['recipe_image']
         cooking_time = request.form.get('cooking_time')
         difficulty_level = request.form.get('difficulty_level')
         recipe_type = request.form.get('recipe_type')
-        public= request.form.get('public')
+        public = request.form.get('public')
 
         if not recipe_name or not ingredient_names or not instructions:
             flash('Recipe name, ingredients, and instructions are required!', category='error')
             return redirect(url_for('views.add_recipe', group_id=group_id))
 
+        image_path = None
         if recipe_image:
             filename = secure_filename(recipe_image.filename)
-            static_folder = os.path.join(current_app.root_path, 'static')
-            if not os.path.exists(static_folder):
-                os.makedirs(static_folder)
-            image_path = os.path.join(static_folder, filename)
-            recipe_image.save(image_path)
-            relative_image_path = os.path.join('static', filename)
-        else:
-            relative_image_path = None
+            upload_folder = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
+            if not os.path.exists(upload_folder):
+                os.makedirs(upload_folder)
+            filepath = os.path.join(upload_folder, filename)
+            recipe_image.save(filepath)
+            image_path = os.path.join('uploads', filename)  # Store the path relative to static folder
+            flash('Image saved successfully')
 
         new_recipe = Data(
             recipe=recipe_name,
-            image_path=relative_image_path,
+            image_path=image_path,  # Save the relative image path to the database
             instructions=instructions,
             user_id=current_user.id,
-            public=True,
+            public=True if public else False,
             group_id=group_id,
             cooking_time=cooking_time,
             difficulty_level=difficulty_level,
@@ -157,8 +215,6 @@ def add_recipe(group_id):
         return redirect(url_for('views.group_recipes', group_id=group_id))
 
     return render_template('add_recipe.html', user=current_user, group=group)
-
-
 from flask import abort
 
 @views.route('/delete_recipe/<int:recipe_id>', methods=['POST'])
@@ -254,11 +310,12 @@ def edit_recipe(recipe_id):
 @login_required
 def profile():
     return render_template('profile.html', user=current_user)
+
 @views.route('/profile/usergroups')
 @login_required
 def user_groups():
-    user_groups = Group.query.filter((Group.user_id == current_user.id) | (Group.public == True)).all()
-    return render_template('public_recipes.html', user=current_user, groups=user_groups)
+    user_groups = Group.query.filter_by(user_id=current_user.id).all()
+    return render_template('my_groups.html', user=current_user, groups=user_groups)
 
 
 @views.route('/profile/public-recipes')

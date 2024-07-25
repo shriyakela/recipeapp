@@ -13,9 +13,9 @@
     {% for recipe in recipes %}
     <div class="recipe-card">
         <h3>{{ recipe.recipe }}</h3>
-        {% if recipe.image_path %}
-        <img src="{{ url_for('static', filename=recipe.image_path) }}" alt="{{ recipe.recipe }}" style="width: 200px;">
-        {% endif %}
+        {% if recipe_image_url %}
+        <img src="{{ url_for('static', filename='uploads/' + recipe_image_url) }}" alt="Recipe Image">
+    {% endif %}
         <p>{{ recipe.ingredients }}</p>
         <p>{{ recipe.instructions }}</p>
         {% if recipe.user_id == current_user.id %}
