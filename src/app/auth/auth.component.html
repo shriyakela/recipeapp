@@ -7,7 +7,7 @@
             <div *ngIf="isLoading" style="text-align: center;">
                 <app-loading></app-loading>
             </div>
-            <form (ngSubmit)="onSubmit(authForm)" #authForm="ngForm" *ngIf="!isLoading">
+            <!-- <form (ngSubmit)="onSubmit(authForm)" #authForm="ngForm" *ngIf="!isLoading">
                 <div class="form-group m-2 mb-4">
                     <label for="email">E-mail</label>
                     <input class="form-control" type="email" id="email" ngModel name="email" required email>
@@ -32,7 +32,33 @@
                     <button class="btn btn-primary m-2" [disabled]="!authForm.valid">{{isLogin ? 'Login': 'Sign up'}}</button> |
                     <button class="btn btn-primary m-2" (click)="onSwitch()" type="button">Go to {{isLogin ? 'Sign up' : 'Log in'}}</button>
                 </div>
-            </form>
+            </form> -->
+            <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+                <div class="form-group m-2 mb-4">
+                  <label for="email">E-mail</label>
+                  <input type="email" id="email" class="form-control" ngModel name="email" required email>
+                </div>
+                
+                <div class="form-group m-2 mb-4" *ngIf="!isLogin">
+                  <label for="username">Username</label>
+                  <input type="text" id="username" class="form-control" ngModel name="username" required>
+                </div>
+                
+                <div class="form-group m-2 mb-4">
+                  <label for="password">Password</label>
+                  <input type="password" id="password" class="form-control" ngModel name="password" required minlength="6">
+                </div>
+                
+                <div>
+                  <button class="btn btn-primary" type="submit" [disabled]="!f.valid">
+                    {{ isLogin ? 'Login' : 'Sign Up' }}
+                  </button>
+                  |
+                  <button class="btn btn-primary" (click)="onSwitch()" type="button">
+                    Switch to {{ isLogin ? 'Sign Up' : 'Login' }}
+                  </button>
+                </div>
+              </form>
         </div>
     </div>
 </div>

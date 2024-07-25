@@ -23,34 +23,119 @@ export class AuthComponent {
 
   // constructor(private http: HttpClient) {}
 
+  // onSubmit(form: NgForm) {
+  //   if(!form.valid){
+  //     return;
+  //   }
+  //   this.isLoading = true;
+
+  //   const email = form.value.email;
+  //   const username = form.value.username;
+  //   const password1 = form.value.password1;
+  //   const password2 = form.value.password2;
+  //   const password = form.value.password;
+    
+  //   if(this.isLogin){
+  //     this.authService.onLogin(email, password).subscribe(
+  //     (resData)=>{
+  //       localStorage.setItem('authToken', resData.access_token);
+  //       console.log(resData.data.token)
+  //       console.log(resData);
+  //       this.isLoading= false;
+  //       this.router.navigate(['/home'])
+  //     });
+  //   }
+  //   else{
+  //     this.authService.onSignUp(email, username,password1,password2).subscribe(
+  //       (resData) => {
+  //       localStorage.setItem('authToken', resData.access_token);
+  //       console.log(resData);
+  //       this.isLoading = false;
+  //       this.router.navigate(['/home']);
+  //     }
+  //     );
+  //   }
+  //   form.reset();
+  // }
+  // onSubmit(form: NgForm) {
+  //   if (!form.valid) {
+  //     return;
+  //   }
+  //   this.isLoading = true;
+  
+  //   const email = form.value.email;
+  //   const username = form.value.username;
+  //   const password = form.value.password;
+  
+  //   if (this.isLogin) {
+  //     this.authService.onLogin(email, password).subscribe(
+  //       {next: (resData) => {
+  //         localStorage.setItem('authToken', resData.access_token);
+  //         console.log(resData);
+  //         this.isLoading = false;
+  //         this.router.navigate(['/home'])
+  //       },
+  //       error:(error) => {
+  //         console.error('Login error:', error);
+  //         this.error = error.error.msg || 'An error occurred';
+  //         this.isLoading = false;
+  //       }}
+  //     );
+  //   } else {
+  //     this.authService.onSignUp(email, username, password).subscribe(
+  //       {next: (resData) => {
+  //         localStorage.setItem('authToken', resData.access_token);
+  //         console.log(resData);
+  //         this.isLoading = false;
+  //         this.router.navigate(['/home']);
+  //       },
+  //       error: (error) => {
+  //         console.error('Signup error:', error);
+  //         this.error = error.error.msg || 'An error occurred';
+  //         this.isLoading = false;
+  //       }}
+  //     );
+  //   }
+  //   form.reset();
+  // }
   onSubmit(form: NgForm) {
-    if(!form.valid){
+    if (!form.valid) {
       return;
     }
     this.isLoading = true;
-
+  
     const email = form.value.email;
-    const username = form.value.username;
-    const password1 = form.value.password1;
-    const password2 = form.value.password2;
     const password = form.value.password;
-    
-    if(this.isLogin){
-      this.authService.onLogin(email, password).subscribe(
-      (resData)=>{
-        console.log(resData);
-        this.isLoading= false;
-        this.router.navigate(['/home'])
+    const username = this.isLogin ? null : form.value.username;
+  
+    if (this.isLogin) {
+      this.authService.onLogin(email, password).subscribe({
+        next: (resData) => {
+          localStorage.setItem('authToken', resData.access_token);
+          console.log(resData);
+          this.isLoading = false;
+          this.router.navigate(['/home']);
+        },
+        error: (error) => {
+          console.error('Login error:', error);
+          this.error = error.error.msg || 'An error occurred';
+          this.isLoading = false;
+        }
       });
-    }
-    else{
-      this.authService.onSignUp(email, username,password1,password2).subscribe(
-        (resData) => {
-        console.log(resData);
-        this.isLoading = false;
-        this.router.navigate(['/home']);
-      }
-      );
+    } else {
+      this.authService.onSignUp(email, username, password).subscribe({
+        next: (resData) => {
+          localStorage.setItem('authToken', resData.access_token);
+          console.log(resData);
+          this.isLoading = false;
+          this.router.navigate(['/home']);
+        },
+        error: (error) => {
+          console.error('Signup error:', error);
+          this.error = error.error.msg || 'An error occurred';
+          this.isLoading = false;
+        }
+      });
     }
     form.reset();
   }
