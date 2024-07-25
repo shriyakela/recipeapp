@@ -5,18 +5,27 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from . import db
 import os
 
+from flask import abort
+
 views = Blueprint('views', __name__)
 
 @views.route('/')
 @jwt_required()
 def home():
     current_user = User.query.get(get_jwt_identity())
+   
     public_groups = Group.query.filter_by(public=True).all()
-    user_groups = Group.query.filter((Group.user_id == current_user.id) | (Group.public == True)).all()
-    unique_groups = {group.id: group for group in user_groups}.values()
+    
+    
+    # user_groups = Group.query.filter((Group.user_id == current_user.id) | (Group.public == True)).all()
+
+    
+    # unique_groups = {group.id: group for group in user_groups}.values()
+    
+    
     public_recipes = Data.query.join(Group).filter(Group.public == True).all()
 
-    return render_template("home.html", user=current_user, groups=unique_groups, public_recipes=public_recipes)
+    return render_template("home.html", user=current_user, groups=public_groups, public_recipes=public_recipes)
 
 @views.route('/group/<int:group_id>')
 @jwt_required()
@@ -250,6 +259,11 @@ def profile_groups():
     current_user = User.query.get(get_jwt_identity())
     groups = Group.query.filter_by(user_id=current_user.id).all()
     return render_template('profile_groups.html', user=current_user, groups=groups)
+views.route('/profile/usergroups')
+@jwt_required()
+def user_groups(current_user):
+    user_groups = Group.query.filter((Group.user_id == current_user.id) | (Group.public == True)).all()
+    return render_template('public_recipes.html', user=current_user, groups=user_groups)
 
 
 @views.route('/profile/shopping-list', methods=['GET', 'POST'])
