@@ -1,52 +1,44 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
-from flask_login import login_required, current_user
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, current_app
 from .models import Data, User, Group, Ingredient
 from werkzeug.utils import secure_filename
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from . import db
 import os
-from flask import current_app
 
 views = Blueprint('views', __name__)
 
 @views.route('/')
-@login_required
+@jwt_required()
 def home():
-    # Get all public groups
+    current_user = User.query.get(get_jwt_identity())
     public_groups = Group.query.filter_by(public=True).all()
-    
-    # Get all groups where the current user is the creator or where the user is a member of the group
     user_groups = Group.query.filter((Group.user_id == current_user.id) | (Group.public == True)).all()
-
-    # Remove duplicates using a set or dict to ensure no group is displayed more than once
     unique_groups = {group.id: group for group in user_groups}.values()
-    
-    # Get all public recipes in public groups
     public_recipes = Data.query.join(Group).filter(Group.public == True).all()
 
     return render_template("home.html", user=current_user, groups=unique_groups, public_recipes=public_recipes)
 
-
 @views.route('/group/<int:group_id>')
-@login_required
+@jwt_required()
 def group_recipes(group_id):
+    current_user = User.query.get(get_jwt_identity())
     group = Group.query.get_or_404(group_id)
-    
-    # Check if the group is public or if the user is the creator of the group
     if not group.public and group.user_id != current_user.id:
         flash('You do not have permission to view this group!', category='error')
         return redirect(url_for('views.home'))
 
-    # Get recipes for the group
     recipes = Data.query.filter_by(group_id=group_id).all()
     
     return render_template("group_recipes.html", user=current_user, group=group, recipes=recipes)
+
 @views.route('/create-group', methods=['GET', 'POST'])
-@login_required
+@jwt_required()
 def create_group():
+    current_user = User.query.get(get_jwt_identity())
     if request.method == 'POST':
         name = request.form.get('name')
         description = request.form.get('description')
-        public = 'public' in request.form  # This will be True if the 'public' checkbox is checked
+        public = 'public' in request.form
 
         if len(name) < 1:
             flash('Group name is too short!', category='error')
@@ -59,10 +51,10 @@ def create_group():
 
     return render_template('create_group.html', user=current_user)
 
-
 @views.route('/edit-group/<int:group_id>', methods=['GET', 'POST'])
-@login_required
+@jwt_required()
 def edit_group(group_id):
+    current_user = User.query.get(get_jwt_identity())
     group = Group.query.get_or_404(group_id)
     if group.user_id != current_user.id:
         flash('You do not have permission to edit this group.', 'danger')
@@ -78,16 +70,12 @@ def edit_group(group_id):
 
     return render_template('edit_group.html', group=group, user=current_user)
 
-
-
-
-
 @views.route('/delete-group/<int:group_id>', methods=['POST'])
-@login_required
+@jwt_required()
 def delete_group(group_id):
+    current_user = User.query.get(get_jwt_identity())
     group = Group.query.get_or_404(group_id)
     if group and group.user_id == current_user.id:
-        # Delete related recipes
         Data.query.filter_by(group_id=group_id).delete()
         db.session.delete(group)
         db.session.commit()
@@ -97,16 +85,14 @@ def delete_group(group_id):
     return redirect(url_for('views.home'))
 
 @views.route('/add-recipe/<int:group_id>', methods=['GET', 'POST'])
-@login_required
+@jwt_required()
 def add_recipe(group_id):
+    current_user = User.query.get(get_jwt_identity())
     if group_id is None:
         flash('Please select a group to add a recipe to.', category='error')
         return redirect(url_for('views.home'))
 
     group = Group.query.get_or_404(group_id)
-    # if group.user_id != current_user.id:
-    #     flash('You do not have permission to add recipes to this group!', category='error')
-    #     return redirect(url_for('views.home'))
 
     if request.method == 'POST':
         recipe_name = request.form.get('name')
@@ -158,22 +144,17 @@ def add_recipe(group_id):
 
     return render_template('add_recipe.html', user=current_user, group=group)
 
-
-from flask import abort
-
 @views.route('/delete_recipe/<int:recipe_id>', methods=['POST'])
-@login_required
+@jwt_required()
 def delete_recipe(recipe_id):
+    current_user = User.query.get(get_jwt_identity())
     recipe = Data.query.get_or_404(recipe_id)
     
     if recipe.user_id != current_user.id:
-        abort(403)  # Forbidden
+        abort(403)
 
     try:
-        # First, delete all ingredients associated with this recipe
         Ingredient.query.filter_by(data_id=recipe.id).delete()
-        
-        # Then delete the recipe
         db.session.delete(recipe)
         db.session.commit()
         flash('Recipe deleted successfully!', category='success')
@@ -183,11 +164,10 @@ def delete_recipe(recipe_id):
     
     return redirect(url_for('views.group_recipes', group_id=recipe.group_id))
 
-
-
 @views.route('/edit-recipe/<int:recipe_id>', methods=['GET', 'POST'])
-@login_required
+@jwt_required()
 def edit_recipe(recipe_id):
+    current_user = User.query.get(get_jwt_identity())
     recipe = Data.query.get_or_404(recipe_id)
     if recipe.user_id != current_user.id:
         flash('You do not have permission to edit this recipe!', category='error')
@@ -204,7 +184,6 @@ def edit_recipe(recipe_id):
         difficulty_level = request.form.get('difficulty_level')
         recipe_type = request.form.get('recipe_type')
 
-        # Check for empty fields
         if not recipe_name or not ingredient_names or not instructions:
             flash('All fields are required!', category='error')
             return render_template('edit_recipe.html', recipe=recipe, user=current_user)
@@ -221,26 +200,21 @@ def edit_recipe(recipe_id):
             recipe_image.save(os.path.join(current_app.root_path, image_path))
             recipe.image_path = image_path
 
-        # Update or create ingredients
         existing_ingredients = {str(i.id): i for i in recipe.ingredients}
         for quantity, name, ing_id in zip(ingredient_quantities, ingredient_names, ingredient_ids):
             if ing_id:
                 if ing_id in existing_ingredients:
-                    # Update existing ingredient
                     ingredient = existing_ingredients[ing_id]
                     ingredient.quantity = quantity
                     ingredient.name = name
                     del existing_ingredients[ing_id]
                 else:
-                    # Add new ingredient
                     new_ingredient = Ingredient(quantity=quantity, name=name, data_id=recipe.id)
                     db.session.add(new_ingredient)
             else:
-                # Handle case where ing_id is not provided
                 new_ingredient = Ingredient(quantity=quantity, name=name, data_id=recipe.id)
                 db.session.add(new_ingredient)
 
-        # Delete remaining ingredients
         for ingredient in existing_ingredients.values():
             db.session.delete(ingredient)
 
@@ -251,25 +225,37 @@ def edit_recipe(recipe_id):
     return render_template('edit_recipe.html', recipe=recipe, user=current_user)
 
 @views.route('/profile')
-@login_required
+@jwt_required()
 def profile():
+    current_user = User.query.get(get_jwt_identity())
     return render_template('profile.html', user=current_user)
 
 @views.route('/profile/public-recipes')
-@login_required
+@jwt_required()
 def public_recipes():
-    user_public_recipes = Data.query.filter_by(user_id=current_user.id, public=True).all()
-    return render_template('public_recipes.html', user=current_user, recipes=user_public_recipes)
+    current_user = User.query.get(get_jwt_identity())
+    public_recipes = Data.query.filter_by(public=True).all()
+    return render_template('public_recipes.html', user=current_user, recipes=public_recipes)
 
-@views.route('/profile/private-recipes')
-@login_required
-def private_recipes():
-    user_private_recipes = Data.query.filter_by(user_id=current_user.id, public=False).all()
-    return render_template('private_recipes.html', user=current_user, recipes=user_private_recipes)
+@views.route('/profile/personal-recipes')
+@jwt_required()
+def personal_recipes():
+    current_user = User.query.get(get_jwt_identity())
+    personal_recipes = Data.query.filter_by(user_id=current_user.id).all()
+    return render_template('personal_recipes.html', user=current_user, recipes=personal_recipes)
+
+@views.route('/profile/groups')
+@jwt_required()
+def profile_groups():
+    current_user = User.query.get(get_jwt_identity())
+    groups = Group.query.filter_by(user_id=current_user.id).all()
+    return render_template('profile_groups.html', user=current_user, groups=groups)
+
 
 @views.route('/profile/shopping-list', methods=['GET', 'POST'])
-@login_required
+@jwt_required()
 def shopping_list():
+    current_user = User.query.get(get_jwt_identity())
     if request.method == 'POST':
         ingredient = request.form.get('ingredient')
         if ingredient:
@@ -288,8 +274,9 @@ def shopping_list():
     return render_template('shopping_list.html', user=current_user, shopping_list=shopping_list)
 
 @views.route('/profile/shopping-list/remove', methods=['POST'])
-@login_required
+@jwt_required()
 def remove_from_shopping_list():
+    current_user = User.query.get(get_jwt_identity())
     ingredient = request.form.get('ingredient')
     if ingredient and current_user.shopping_list:
         shopping_list = current_user.shopping_list.split(',')
@@ -303,9 +290,11 @@ def remove_from_shopping_list():
     else:
         flash('Invalid request!', category='error')
     return redirect(url_for('views.shopping_list'))
+
 @views.route('/recipe/<int:recipe_id>')
-@login_required
+@jwt_required()
 def recipe_detail(recipe_id):
+    current_user = User.query.get(get_jwt_identity())
     recipe = Data.query.get_or_404(recipe_id)
     if recipe.user_id != current_user.id and not recipe.public:
         flash('You do not have permission to view this recipe!', category='error')
@@ -313,9 +302,11 @@ def recipe_detail(recipe_id):
 
     ingredients = Ingredient.query.filter_by(data_id=recipe_id).all()
     return render_template('recipe_detail.html', user=current_user, recipe=recipe, ingredients=ingredients)
+
 @views.route('/add-to-shopping-list', methods=['POST'])
-@login_required
+@jwt_required()
 def add_to_shopping_list():
+    current_user = User.query.get(get_jwt_identity())
     ingredient_id = request.form.get('ingredient_id')
     ingredient = Ingredient.query.get_or_404(ingredient_id)
 

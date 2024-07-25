@@ -18,7 +18,7 @@ class Data(db.Model):
     difficulty_level = db.Column(db.String, nullable=False)
     recipe = db.Column(db.String(10000))
     image_path = db.Column(db.String(200))
-    ingredients = db.relationship('Ingredient', backref='data', lazy=True)  # Changed to relationship
+    ingredients = db.relationship('Ingredient', backref='data', lazy=True)
     instructions = db.Column(db.Text)
     recipe_type = db.Column(db.String, nullable=False)
     public = db.Column(db.Boolean, default=False)
