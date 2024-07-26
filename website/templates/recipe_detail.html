@@ -6,7 +6,7 @@
     <h1>{{ recipe.recipe }}</h1>
 
     {% if recipe.image_path %}
-    <img src="{{ url_for('static', filename=recipe.image_path) }}" alt="{{ recipe.recipe }}" class="img-fluid">
+    <img src="http://127.0.0.1:5000/static/{{recipe.image_path }}" alt="{{ recipe.recipe }}" class="img-fluid">
 {% else %}
     <p>No image available</p>
 {% endif %}

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
-from .models import Data, User, Group, Ingredient,Review, Comment
+from .models import Data, User, Group, Ingredient,Review, Comment,favourites
 from werkzeug.utils import secure_filename
 from . import db
 import os
@@ -189,7 +189,7 @@ def add_recipe(group_id):
                 os.makedirs(upload_folder)
             filepath = os.path.join(upload_folder, filename)
             recipe_image.save(filepath)
-            image_path = os.path.join('uploads', filename)  # Store the path relative to static folder
+            image_path =  filename  # Store the path relative to static folder
             flash('Image saved successfully')
 
         new_recipe = Data(
@@ -403,7 +403,21 @@ def recipe_detail(recipe_id):
             else:
                 flash('Comment cannot be empty.', category='error')
 
+        if 'add_to_favourites' in request.form:
+            if current_user not in recipe.favourited_by:
+                recipe.favourited_by.append(current_user)
+                db.session.commit()
+                flash('Recipe added to favourites.', category='success')
+            else:
+                flash('Recipe is already in your favourites.', category='error')
+
     return render_template('recipe_detail.html', user=current_user, recipe=recipe, ingredients=ingredients, reviews=reviews, comments=comments)
+
+@views.route('/favourites', methods=['GET'])
+@login_required
+def favourites():
+    favourite_recipes = current_user.favourites.all()
+    return render_template('favourites.html', user=current_user, recipes=favourite_recipes)
 
 @views.route('/add-to-shopping-list', methods=['POST'])
 @login_required
