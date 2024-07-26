@@ -51,3 +51,12 @@
     width: 20px; /* Icon size */
     height: 20px;
 }
+
+
+/* home styles */
+.home-container{
+    height: 88vh;
+    background-image: url("https://img.freepik.com/premium-vector/modern-yellow-gradient-backgrounds-with-lines-header-banner-bright-geometric-abstract-presentation-backdrops-vector-illustration_515038-19522.jpg?w=740");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
