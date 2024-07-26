@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, current_app
-from .models import Data, User, Group, Ingredient
+from .models import Data, User, Group, Ingredient,Review, Comment
 from werkzeug.utils import secure_filename
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from . import db
@@ -331,8 +331,7 @@ def remove_from_shopping_list():
             return jsonify({'message': 'Ingredient removed from shopping list!'}), 200
         return jsonify({'message': 'Ingredient not found in shopping list!'}), 400
     return jsonify({'message': 'Invalid request!'}), 400
-
-@views.route('/recipe/<int:recipe_id>')
+@views.route('/recipe/<int:recipe_id>', methods=['GET', 'POST'])
 @jwt_required()
 def recipe_detail(recipe_id):
     current_user = User.query.get(get_jwt_identity())
@@ -340,19 +339,48 @@ def recipe_detail(recipe_id):
     if recipe.user_id != current_user.id and not recipe.public:
         return jsonify({'message': 'You do not have permission to view this recipe!'}), 403
 
+    if request.method == 'POST':
+        data = request.json
+        if 'thumbs_up' in data or 'thumbs_down' in data:
+            thumbs_up = 'thumbs_up' in data
+            existing_review = Review.query.filter_by(user_id=current_user.id, recipe_id=recipe_id).first()
+            if existing_review:
+                existing_review.thumbs_up = thumbs_up
+                db.session.commit()
+                return jsonify({'message': 'Your review has been updated.'}), 200
+            else:
+                new_review = Review(thumbs_up=thumbs_up, user_id=current_user.id, recipe_id=recipe_id)
+                db.session.add(new_review)
+                db.session.commit()
+                return jsonify({'message': 'Your review has been added.'}), 200
+
+        if 'comment_text' in data:
+            comment_text = data.get('comment_text')
+            if comment_text:
+                new_comment = Comment(text=comment_text, user_id=current_user.id, recipe_id=recipe_id)
+                db.session.add(new_comment)
+                db.session.commit()
+                return jsonify({'message': 'Your comment has been added.'}), 200
+            return jsonify({'message': 'Comment cannot be empty.'}), 400
+
     ingredients = Ingredient.query.filter_by(data_id=recipe_id).all()
-    ingredients_data = [{"id": ingredient.id, "quantity": ingredient.quantity, "name": ingredient.name} for ingredient in ingredients]
+    reviews = Review.query.filter_by(recipe_id=recipe_id).all()
+    comments = Comment.query.filter_by(recipe_id=recipe_id).all()
+
     recipe_data = {
         "id": recipe.id,
         "recipe": recipe.recipe,
-        "ingredients": ingredients_data,
+        "ingredients": [{"id": ingredient.id, "quantity": ingredient.quantity, "name": ingredient.name} for ingredient in ingredients],
         "instructions": recipe.instructions,
         "cooking_time": recipe.cooking_time,
         "difficulty_level": recipe.difficulty_level,
         "image_path": recipe.image_path,
         "recipe_type": recipe.recipe_type,
-        "public": recipe.public
+        "public": recipe.public,
+        "reviews": [{"id": review.id, "thumbs_up": review.thumbs_up, "user_id": review.user_id} for review in reviews],
+        "comments": [{"id": comment.id, "text": comment.text, "user_id": comment.user_id} for comment in comments]
     }
+
     return jsonify(recipe_data)
 
 @views.route('/add-to-shopping-list', methods=['POST'])

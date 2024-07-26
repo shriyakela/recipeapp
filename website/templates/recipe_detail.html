@@ -25,7 +25,7 @@
             {{ ingredient.quantity }} {{ ingredient.name }}
             <form action="{{ url_for('views.add_to_shopping_list') }}" method="POST" style="display: inline;">
                 <input type="hidden" name="ingredient_id" value="{{ ingredient.id }}">
-                <button type="submit" class="btn btn-sm btn-primary">Add to Shopping List</button>
+                <button type="submit" class="btn btn-sm btn-primary">+</button>
             </form>
         </li>
     {% endfor %}
