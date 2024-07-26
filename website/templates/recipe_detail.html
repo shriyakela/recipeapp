@@ -33,5 +33,30 @@
     </ul>
 </div>
 
+<div>
+    <h2>Reviews</h2>
+    <form method="POST">
+        <button name="thumbs_up" class="btn btn-success">Thumbs Up</button>
+        <button name="thumbs_down" class="btn btn-danger">Thumbs Down</button>
+    </form>
+    <p>Thumbs Up: {{ reviews | selectattr('thumbs_up', 'eq', True) | list | length }}</p>
+    <p>Thumbs Down: {{ reviews | selectattr('thumbs_up', 'eq', False) | list | length }}</p>
+</div>
+
+<div>
+    <h2>Comments</h2>
+    <form method="POST">
+        <textarea name="comment_text" class="form-control" rows="3" placeholder="Add a comment"></textarea>
+        <button type="submit" name="comment" class="btn btn-primary mt-2">Submit</button>
+    </form>
+    <ul class="list-unstyled mt-3">
+    {% for comment in comments %}
+        <li>
+            <strong>{{ comment.user.username }}</strong>: {{ comment.text }}
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+
 <a href="{{ url_for('views.group_recipes', group_id=recipe.group_id) }}" class="btn btn-secondary">Back to Group Recipes</a>
 {% endblock %}

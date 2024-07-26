@@ -18,10 +18,12 @@ class Data(db.Model):
     difficulty_level = db.Column(db.String, nullable=False)
     recipe = db.Column(db.String(10000))
     image_path = db.Column(db.String(200))
-    ingredients = db.relationship('Ingredient', backref='data', lazy=True)  # Changed to relationship
+    ingredients = db.relationship('Ingredient', backref='data', lazy=True)
     instructions = db.Column(db.Text)
     recipe_type = db.Column(db.String, nullable=False)
     public = db.Column(db.Boolean, default=False)
+    reviews = db.relationship('Review', backref='recipe', lazy=True)
+    comments = db.relationship('Comment', backref='recipe', lazy=True)
 
 class Ingredient(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -37,3 +39,17 @@ class User(db.Model, UserMixin):
     recipes = db.relationship('Data', backref='user', lazy=True)
     groups = db.relationship('Group', backref='creator', lazy=True)
     shopping_list = db.Column(db.Text, nullable=True)
+    reviews = db.relationship('Review', backref='user', lazy=True)
+    comments = db.relationship('Comment', backref='user', lazy=True)
+
+class Review(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    thumbs_up = db.Column(db.Boolean)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('data.id'), nullable=False)
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('data.id'), nullable=False)

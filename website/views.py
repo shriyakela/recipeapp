@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
-from .models import Data, User, Group, Ingredient
+from .models import Data, User, Group, Ingredient,Review, Comment
 from werkzeug.utils import secure_filename
 from . import db
 import os
@@ -366,7 +366,9 @@ def remove_from_shopping_list():
     else:
         flash('Invalid request!', category='error')
     return redirect(url_for('views.shopping_list'))
-@views.route('/recipe/<int:recipe_id>')
+
+
+@views.route('/recipe/<int:recipe_id>', methods=['GET', 'POST'])
 @login_required
 def recipe_detail(recipe_id):
     recipe = Data.query.get_or_404(recipe_id)
@@ -375,7 +377,34 @@ def recipe_detail(recipe_id):
         return redirect(url_for('views.home'))
 
     ingredients = Ingredient.query.filter_by(data_id=recipe_id).all()
-    return render_template('recipe_detail.html', user=current_user, recipe=recipe, ingredients=ingredients)
+    reviews = Review.query.filter_by(recipe_id=recipe_id).all()
+    comments = Comment.query.filter_by(recipe_id=recipe_id).all()
+
+    if request.method == 'POST':
+        if 'thumbs_up' in request.form or 'thumbs_down' in request.form:
+            thumbs_up = 'thumbs_up' in request.form
+            existing_review = Review.query.filter_by(user_id=current_user.id, recipe_id=recipe_id).first()
+            if existing_review:
+                existing_review.thumbs_up = thumbs_up
+                flash('Your review has been updated.', category='success')
+            else:
+                new_review = Review(thumbs_up=thumbs_up, user_id=current_user.id, recipe_id=recipe_id)
+                db.session.add(new_review)
+                flash('Your review has been added.', category='success')
+            db.session.commit()
+
+        if 'comment' in request.form:
+            comment_text = request.form.get('comment_text')
+            if comment_text:
+                new_comment = Comment(text=comment_text, user_id=current_user.id, recipe_id=recipe_id)
+                db.session.add(new_comment)
+                db.session.commit()
+                flash('Your comment has been added.', category='success')
+            else:
+                flash('Comment cannot be empty.', category='error')
+
+    return render_template('recipe_detail.html', user=current_user, recipe=recipe, ingredients=ingredients, reviews=reviews, comments=comments)
+
 @views.route('/add-to-shopping-list', methods=['POST'])
 @login_required
 def add_to_shopping_list():
