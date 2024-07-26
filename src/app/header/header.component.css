@@ -1,0 +1,98 @@
+/* src/app/shared/navbar.component.css */
+
+/* General Navbar Styling */
+.custom-navbar {
+    background-color: #e0f7fa; /* Pastel light cyan background */
+    padding: 1rem; /* Padding for spacing */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: background-color 0.3s ease; /* Smooth transition for background color changes */
+  }
+  
+  /* Navbar Brand */
+  .navbar-brand {
+    font-family: 'Poppins', sans-serif; /* Modern font */
+    font-size: 2rem; /* Larger font size for prominence */
+    color: #00796b; /* Deep teal for brand text */
+    text-decoration: none; /* Remove underline */
+  }
+  
+  .brand-text {
+    font-weight: 600; /* Semi-bold for brand */
+  }
+  
+  .highlight {
+    color: #004d40; /* Darker teal for highlighting 'Book' */
+  }
+  
+  /* Navbar Links */
+  .navbar-nav .nav-link {
+    font-size: 1.1rem; /* Slightly larger font size */
+    color: #004d40; /* Darker teal color for links */
+    margin-right: 1rem; /* Spacing between nav items */
+    transition: color 0.3s ease, transform 0.3s ease; /* Smooth transitions for effects */
+    position: relative; /* Position for underline effect */
+  }
+  
+  /* Hover Effect */
+  .navbar-nav .nav-link:hover {
+    color: #00796b; /* Deep teal on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
+  }
+  
+  .navbar-nav .nav-link::after {
+    content: ''; /* Empty content for underline */
+    position: absolute; /* Position relative to link */
+    left: 0; /* Start at beginning of link */
+    bottom: -5px; /* Slightly below link */
+    width: 100%; /* Full width */
+    height: 2px; /* Thickness of underline */
+    background-color: #00796b; /* Deep teal for underline */
+    transform: scaleX(0); /* Start hidden */
+    transition: transform 0.3s ease; /* Smooth reveal */
+  }
+  
+  .navbar-nav .nav-link:hover::after {
+    transform: scaleX(1); /* Reveal underline on hover */
+  }
+  
+  /* Active Link Styles */
+  .navbar-nav .nav-item.active .nav-link {
+    color: #00796b; /* Match hover color */
+    font-weight: 600; /* Bold for emphasis */
+  }
+  
+  /* Navbar Toggler */
+  .navbar-toggler {
+    border-color: rgba(0, 0, 0, 0.2); /* Light border for toggler */
+  }
+  
+  .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%2300796b' viewBox='0 0 30 30'><path stroke='%2300796b' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>");
+    /* Custom icon color */
+  }
+  
+  /* Login Link Specific Style */
+  .login-link {
+    font-weight: 600; /* Slightly bolder */
+  }
+  
+  /* Logout Link Specific Style */
+  .logout-link {
+    font-weight: 600; /* Slightly bolder */
+    color: #d32f2f; /* Red to signify logout */
+    transition: color 0.3s ease;
+  }
+  
+  .logout-link:hover {
+    color: #b71c1c; /* Darker red on hover */
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 992px) {
+    .navbar-nav .nav-link {
+      margin-right: 0;
+      margin-bottom: 0.5rem; /* Spacing between items on mobile */
+      text-align: center; /* Center text on mobile */
+    }
+  }
+  

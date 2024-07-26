@@ -20,6 +20,18 @@
       <div class="slider-content" [ngStyle]="{'transform': 'translateX(-' + (currentIndex * 20) + '%)'}">
         <div class="slider-item" *ngFor="let group of groups">
           <app-group-item [group]="group"></app-group-item>
+          <!-- <div class="group-item">
+  
+            <div class="group-image-container">
+              <a style="cursor: pointer;">
+                <img src="../../../../assets/images/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg" 
+                [alt]="group.name" class="group-image" />
+              </a>
+            </div>
+            <div class="group-info">
+              <h4 class="group-name">{{ group.name }}</h4>
+            </div>
+          </div> -->
         </div>
       </div>  
     </div>

@@ -69,4 +69,26 @@ export class GroupStartComponent {
       );
     }
   }
+  // onSubmit() {
+  //   if (this.groupForm.valid) {
+  //     const groupData = this.groupForm.value;
+  //     this.groupService.createGroup(groupData).subscribe({
+  //       next: (response) => {
+  //         console.log('Group created successfully:', response);
+  //         // Handle success (e.g., show a success message, navigate to the new group)
+  //       },
+  //       error: (error) => {
+  //         console.error('Error creating group:', error);
+  //         if (error.error && error.error.msg) {
+  //           // Display the error message from the server
+  //           console.error('Server error:', error.error.msg);
+  //         } else {
+  //           // Display a generic error message
+  //           console.error('An unexpected error occurred');
+  //         }
+  //         // Handle error (e.g., show an error message to the user)
+  //       }
+  //     });
+  //   }
+  // }
 }

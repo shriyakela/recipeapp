@@ -1,1 +1,257 @@
-<p>new-recipe works!</p>
+<!-- recipe.component.html -->
+
+<div class="container">
+    <h1>Create a New Recipe</h1>
+    <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
+      <!-- User ID -->
+      <div class="form-group">
+        <label for="user_id">User ID</label>
+        <input
+          type="number"
+          id="user_id"
+          formControlName="user_id"
+          class="form-control"
+          placeholder="Enter User ID"
+          required
+        />
+        <div
+          *ngIf="recipeForm.get('user_id')?.invalid && recipeForm.get('user_id')?.touched"
+          class="text-danger"
+        >
+          User ID is required.
+        </div>
+      </div>
+  
+      <!-- Group ID -->
+      <div class="form-group">
+        <label for="group_id">Group ID</label>
+        <input
+          type="number"
+          id="group_id"
+          formControlName="group_id"
+          class="form-control"
+          placeholder="Enter Group ID"
+          required
+        />
+        <div
+          *ngIf="recipeForm.get('group_id')?.invalid && recipeForm.get('group_id')?.touched"
+          class="text-danger"
+        >
+          Group ID is required.
+        </div>
+      </div>
+  
+      <!-- Cooking Time -->
+      <div class="form-group">
+        <label for="cooking_time">Cooking Time (minutes)</label>
+        <input
+          type="number"
+          id="cooking_time"
+          formControlName="cooking_time"
+          class="form-control"
+          placeholder="Enter Cooking Time"
+          min="1"
+          required
+        />
+        <div
+          *ngIf="
+            recipeForm.get('cooking_time')?.invalid &&
+            recipeForm.get('cooking_time')?.touched
+          "
+          class="text-danger"
+        >
+          Cooking Time is required and must be at least 1 minute.
+        </div>
+      </div>
+  
+      <!-- Difficulty Level -->
+      <div class="form-group">
+        <label for="difficulty_level">Difficulty Level</label>
+        <select
+          id="difficulty_level"
+          formControlName="difficulty_level"
+          class="form-control"
+          required
+        >
+          <option value="">Select Difficulty</option>
+          <option *ngFor="let level of difficultyLevels" [value]="level">
+            {{ level }}
+          </option>
+        </select>
+        <div
+          *ngIf="
+            recipeForm.get('difficulty_level')?.invalid &&
+            recipeForm.get('difficulty_level')?.touched
+          "
+          class="text-danger"
+        >
+          Difficulty Level is required.
+        </div>
+      </div>
+  
+      <!-- Recipe Description -->
+      <div class="form-group">
+        <label for="recipe">Recipe Description</label>
+        <textarea
+          id="recipe"
+          formControlName="recipe"
+          class="form-control"
+          placeholder="Enter Recipe Description"
+          rows="5"
+          maxlength="10000"
+          required
+        ></textarea>
+        <div
+          *ngIf="recipeForm.get('recipe')?.invalid && recipeForm.get('recipe')?.touched"
+          class="text-danger"
+        >
+          Recipe description is required and cannot exceed 10,000 characters.
+        </div>
+      </div>
+  
+      <!-- Image Path -->
+      <div class="form-group">
+        <label for="image_path">Image Path</label>
+        <input
+          type="text"
+          id="image_path"
+          formControlName="image_path"
+          class="form-control"
+          placeholder="Enter Image Path"
+        />
+      </div>
+  
+      <!-- Ingredients -->
+      <div formArrayName="ingredients" class="form-group">
+        <label>Ingredients</label>
+        <div
+          *ngFor="let ingredient of ingredients.controls; let i = index"
+          [formGroupName]="i"
+          class="ingredient-item"
+        >
+          <!-- Quantity -->
+          <div class="form-group">
+            <label for="quantity">Quantity</label>
+            <input
+              type="text"
+              id="quantity"
+              formControlName="quantity"
+              class="form-control"
+              placeholder="Enter Quantity"
+              required
+            />
+            <div
+              *ngIf="
+                ingredient.get('quantity')?.invalid && ingredient.get('quantity')?.touched
+              "
+              class="text-danger"
+            >
+              Quantity is required.
+            </div>
+          </div>
+  
+          <!-- Name -->
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              formControlName="name"
+              class="form-control"
+              placeholder="Enter Ingredient Name"
+              required
+            />
+            <div
+              *ngIf="
+                ingredient.get('name')?.invalid && ingredient.get('name')?.touched
+              "
+              class="text-danger"
+            >
+              Ingredient name is required.
+            </div>
+          </div>
+  
+          <!-- Remove Ingredient Button -->
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="removeIngredient(i)"
+            *ngIf="ingredients.length > 1"
+          >
+            Remove Ingredient
+          </button>
+        </div>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="addIngredient()"
+        >
+          Add Ingredient
+        </button>
+      </div>
+  
+      <!-- Instructions -->
+      <div class="form-group">
+        <label for="instructions">Instructions</label>
+        <textarea
+          id="instructions"
+          formControlName="instructions"
+          class="form-control"
+          placeholder="Enter Cooking Instructions"
+          rows="5"
+          required
+        ></textarea>
+        <div
+          *ngIf="
+            recipeForm.get('instructions')?.invalid &&
+            recipeForm.get('instructions')?.touched
+          "
+          class="text-danger"
+        >
+          Instructions are required.
+        </div>
+      </div>
+  
+      <!-- Recipe Type -->
+      <div class="form-group">
+        <label for="recipe_type">Recipe Type</label>
+        <select
+          id="recipe_type"
+          formControlName="recipe_type"
+          class="form-control"
+          required
+        >
+          <option value="">Select Recipe Type</option>
+          <option *ngFor="let type of recipeTypes" [value]="type">
+            {{ type }}
+          </option>
+        </select>
+        <div
+          *ngIf="
+            recipeForm.get('recipe_type')?.invalid &&
+            recipeForm.get('recipe_type')?.touched
+          "
+          class="text-danger"
+        >
+          Recipe Type is required.
+        </div>
+      </div>
+  
+      <!-- Public -->
+      <div class="form-group form-check">
+        <input
+          type="checkbox"
+          id="public"
+          formControlName="public"
+          class="form-check-input"
+        />
+        <label for="public" class="form-check-label">Public</label>
+      </div>
+  
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary" [disabled]="recipeForm.invalid">
+        Submit Recipe
+      </button>
+    </form>
+  </div>
+  
