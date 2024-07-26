@@ -1,112 +1,279 @@
-/* Resetting margins, paddings, and box-sizing for a consistent look */
+/* Reset and general styles */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-  }
-  
-  /* General Body Styling */
-  body {
-    background: url("https://cdn.shopify.com/s/files/1/2303/2711/files/beginners-guide-to-instagram-worthy-food-photography-with-a-smartphone-8.jpg?v=1590931475") no-repeat center center fixed;
-    background-size: cover;
-    color: #0a0909;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  /* Navbar Styling */
-  .navbar {
-    background-color: rgba(247, 239, 239, 0.7) !important;
-  }
-  
-  .navbar-brand {
-    color: #fff;
-    font-size: 1.5rem;
-  }
-  
-  .navbar-nav .nav-link {
-    color: #0f0f0f !important;
-    margin-right: 15px;
-  }
-  
-  .navbar-nav .nav-link:hover {
-    color: #f0f0f0 !important;
-  }
-  
-  /* Flash Messages Styling */
-  .alert {
-    margin-top: 20px;
-    font-size: 1rem;
-  }
-  
-  .alert-dismissible .btn-close {
-    filter: invert(1);
-  }
-  
-  /* Container Styling */
-  .container {
-    padding: 20px;
-    background: rgba(243, 240, 240, 0.5);
-    border-radius: 8px;
-  }
-  
-  /* Additional Styles */
-  h1, h2, h3, h4, h5, h6 {
-    color: #100f0f;
-  }
-  
-  /* Recipe and Group Card Styling */
-  .recipe-list, .group-list {
-    margin-top: 30px;
-  }
-  
-  .recipe-card, .group-card {
-    border: 1px solid #0e0d0d;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 20px;
-    background-color: #f9f9f9;
-    color: #000;
-  }
-  
-  .recipe-card h3, .group-card h3 {
-    margin-bottom: 10px;
-  }
-  
-  .recipe-card p, .group-card p {
-    margin-bottom: 10px;
-  }
-  
-  .recipe-card img {
-    margin-bottom: 10px;
-    border-radius: 5px;
-  }
-  
-  /* Ensure responsive images */
-  img {
-    max-width: 100%;
-    height: auto;
-  }
-  
-  /* Styling Buttons */
-  button {
-    background: #fff;
-    color: #000;
-    font-weight: 600;
-    border: none;
-    padding: 12px 20px;
-    cursor: pointer;
-    border-radius: 3px;
-    font-size: 16px;
-    border: 2px solid transparent;
-    transition: 0.3s ease;
-  }
-  
-  button:hover {
-    color: #fff;
-    border-color: #fff;
-    background: rgba(255, 255, 255, 0.15);
-  }
-  
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: url('https://img.freepik.com/premium-vector/yellow-diagonal-geometric-striped-background-with-halftone-detailed_1031961-70.jpg') repeat;
+  background-size: cover;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navbar styling */
+.navbar {
+  background-color: #ffffff;
+  padding: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+  color: #333;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.navbar-nav .nav-link {
+  color: #333 !important;
+  margin-right: 15px;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #ff6b6b !important;
+}
+
+/* Container styling */
+.container {
+  padding: 2rem;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  margin-top: 2rem;
+}
+
+/* Heading styles */
+h1, h2, h3, h4, h5, h6 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+.group-container {
+  width: 100%;
+  overflow: hidden;
+  padding: 20px 0;
+  position: relative;
+}
+
+.group-scroll {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+
+.group-scroll::-webkit-scrollbar { /* WebKit */
+  width: 0;
+  height: 0;
+}
+
+.group-card {
+  flex: 0 0 auto;
+  width: calc(20% - 20px); /* 5 cards at once, with some gap */
+  margin: 0 10px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuCoHNDuSeGxhDaevIF-yvx4h9FLZjZr2oCA&s') no-repeat center center;
+  background-size: cover;
+}
+
+.group-card:hover {
+  transform: translateY(-5px);
+}
+
+.group-content {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1.5rem;
+  border-radius: 15px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.group-card h3 {
+  color: #333;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.group-card p {
+  color: #666;
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.group-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.scroll-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.7);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.scroll-left {
+  left: 10px;
+}
+
+.scroll-right {
+  right: 10px;
+}
+
+/* Group list styling */
+.group-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.group-card {
+  width: 300px;
+  background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuCoHNDuSeGxhDaevIF-yvx4h9FLZjZr2oCA&s') no-repeat center center;
+  background-size: cover;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.group-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.group-content {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1.5rem;
+  border-radius: 15px;
+}
+
+.group-card h3 {
+  color: #333;
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.group-card p {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+/* Button styling */
+.btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.btn-primary {
+  background-color: #ff6b6b;
+  border-color: #ff6b6b;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #ff5252;
+  border-color: #ff5252;
+}
+
+.btn-warning {
+  background-color: #feca57;
+  border-color: #feca57;
+  color: #333;
+}
+
+.btn-warning:hover {
+  background-color: #ffbe3d;
+  border-color: #ffbe3d;
+}
+
+.btn-info {
+  background-color: #54a0ff;
+  border-color: #54a0ff;
+  color: #fff;
+}
+
+.btn-info:hover {
+  background-color: #3d84ff;
+  border-color: #3d84ff;
+}
+
+/* Flash messages */
+.alert {
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Carousel styling */
+.group-carousel {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 2rem 0;
+}
+
+.group-carousel-inner {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 10;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-control-prev {
+  left: 10px;
+}
+
+.carousel-control-next {
+  right: 10px;
+}
