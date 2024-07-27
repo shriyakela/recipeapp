@@ -80,6 +80,15 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item" routerLinkActive="active" *ngIf="isAuthenticated">
+                    <button
+                        class="nav-link" 
+                        type="button"
+                        [routerLink]="['/create-group']" 
+                    >
+                        Add Category
+                    </button>
+                </li>
+                <li class="nav-item" routerLinkActive="active" *ngIf="isAuthenticated">
                     <a 
                         class="nav-link" 
                         [routerLink]="['/myrecipes']" 
@@ -93,7 +102,7 @@
                         class="nav-link" 
                         [routerLink]="['/shopping-list']"
                     >
-                        Shopping List
+                        Favourites
                     </a>
                 </li>
                 <li class="nav-item" routerLinkActive="active" *ngIf="isAuthenticated">
@@ -117,3 +126,65 @@
         </div>
     </div>
 </nav>
+
+
+<!-- <nav class="navbar navbar-expand-lg custom-navbar">
+    <div class="container-fluid">
+        <a 
+            [routerLink]="['/home']" 
+            routerLinkActiveOptions="{exact:true}" 
+            class="navbar-brand"
+        >
+            <span class="brand-text">Recipe<span class="highlight">Book</span></span>
+        </a>
+        <button 
+            class="navbar-toggler" 
+            type="button" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#navbarNav" 
+            aria-controls="navbarNav" 
+            aria-expanded="false" 
+            aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item" routerLinkActive="active">
+                    <a 
+                        class="nav-link" 
+                        [routerLink]="['/myrecipes']" 
+                        (click)="onMyRecipeClicked()"
+                    >
+                        My Recipes
+                    </a>
+                </li>
+                <li class="nav-item" routerLinkActive="active" >
+                    <a  
+                        class="nav-link" 
+                        [routerLink]="['/shopping-list']"
+                    >
+                        Shopping List
+                    </a>
+                </li>
+                <li class="nav-item" routerLinkActive="active">
+                    <a  
+                        class="nav-link logout-link" 
+                        (click)="onLogout()" 
+                        style="cursor: pointer;"
+                    >
+                        Logout
+                    </a>
+                </li>
+                <li class="nav-item" routerLinkActive="active" >
+                    <a  
+                        class="nav-link login-link" 
+                        [routerLink]="['/auth']"
+                    >
+                        Login/Sign Up
+                    </a>
+                </li>
+            </ul> 
+        </div>
+    </div>
+</nav> -->

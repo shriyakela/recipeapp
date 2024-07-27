@@ -22,76 +22,100 @@ import { Router } from '@angular/router'; // Import Router if needed for navigat
     styleUrl: './new-recipe.component.css'
 })
 export class NewRecipeComponent implements OnInit {
-  recipeForm: FormGroup;  // FormGroup instance to manage recipe form
-  difficultyLevels: string[] = ['Easy', 'Medium', 'Hard'];  // Predefined difficulty levels
-  recipeTypes: string[] = ['Breakfast', 'Lunch', 'Dinner', 'Snack', 'Dessert'];  // Predefined recipe types
+  recipeForm!: FormGroup;
+  selectedFile: File | null = null;
 
-  constructor(
-    private fb: FormBuilder,
-    private recipeService: RecipeService,
-    private http: HttpClient,
-    private router: Router
-  ) {}
+  constructor(private fb: FormBuilder, private http: HttpClient) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.recipeForm = this.fb.group({
-      user_id: [null, Validators.required], // User ID field with validation
-      group_id: [null, Validators.required], // Group ID field with validation
-      cooking_time: [0, [Validators.required, Validators.min(1)]], // Cooking time field with validation
-      difficulty_level: ['', Validators.required], // Difficulty level field with validation
-      recipe: ['', [Validators.required, Validators.maxLength(10000)]], // Recipe field with validation
-      image_path: [''], // Image path field
-      ingredients: this.fb.array([]), // Ingredients form array for dynamic inputs
-      instructions: ['', Validators.required], // Instructions field with validation
-      recipe_type: ['', Validators.required], // Recipe type field with validation
-      public: [false] // Public checkbox with default value
+      name: ['', Validators.required],
+      ingredients: this.fb.array([
+        this.fb.group({
+          quantity: ['', Validators.required],
+          name: ['', Validators.required],
+        }),
+      ]),
+      instructions: ['', Validators.required],
+      cookingTime: ['', [Validators.required, Validators.min(1)]],
+      difficultyLevel: ['Easy', Validators.required],
+      recipeType: ['Vegetarian', Validators.required],
+      public: [true],
     });
-
-    // Optionally initialize with one empty ingredient form group
-    this.addIngredient();
   }
 
   get ingredients(): FormArray {
     return this.recipeForm.get('ingredients') as FormArray;
   }
 
-  // Add a new ingredient form group to the form array
-  addIngredient() {
-    const ingredientForm = this.fb.group({
-      quantity: ['', Validators.required], // Quantity field with validation
-      name: ['', Validators.required] // Name field with validation
-    });
-
-    this.ingredients.push(ingredientForm);
+  addIngredient(): void {
+    this.ingredients.push(
+      this.fb.group({
+        quantity: ['', Validators.required],
+        name: ['', Validators.required],
+      })
+    );
   }
 
-  // Remove an ingredient form group from the form array by index
-  removeIngredient(index: number) {
+  removeIngredient(index: number): void {
     this.ingredients.removeAt(index);
   }
 
-  // Submit the recipe form to the server
-  onSubmit() {
-    if (this.recipeForm.valid) {
-      const formData = this.recipeForm.value;
-      console.log('Recipe data:', formData);
+  onFileSelected(event: any): void {
+    this.selectedFile = event.target.files[0];
+  }
 
-      this.recipeService.createRecipe(formData).subscribe({
-        next: response => {
-          console.log('Recipe created successfully:', response);
-          alert('Recipe created successfully!');
-
-          // Optionally navigate to another page after successful submission
-          this.router.navigate(['/recipes']); // Adjust the route as needed
-        },
-        error: error => {
-          console.error('Error creating recipe:', error);
-          alert('An error occurred while creating the recipe.');
-        }
-      });
-    } else {
-      console.log('Recipe form is invalid:', this.recipeForm);
-      alert('Please fill in all required fields correctly.');
+  onSubmit(): void {
+    if (this.recipeForm.invalid) {
+      alert('Please fill out all required fields!');
+      return;
     }
+
+    const formData = new FormData();
+    formData.append('name', this.recipeForm.get('name')?.value);
+    formData.append('instructions', this.recipeForm.get('instructions')?.value);
+    formData.append('cooking_time', this.recipeForm.get('cookingTime')?.value);
+    formData.append('difficulty_level', this.recipeForm.get('difficultyLevel')?.value);
+    formData.append('recipe_type', this.recipeForm.get('recipeType')?.value);
+    formData.append('public', this.recipeForm.get('public')?.value ? '1' : '0');
+
+    this.ingredients.controls.forEach((ingredient, index) => {
+      formData.append(
+        `ingredient_quantities[]`,
+        ingredient.get('quantity')?.value
+      );
+      formData.append(
+        `ingredient_names[]`,
+        ingredient.get('name')?.value
+      );
+    });
+
+    if (this.selectedFile) {
+      formData.append('recipe_image', this.selectedFile, this.selectedFile.name);
+    }
+
+    // Replace 'group_id' with the actual ID of the group you want to add the recipe to
+    const groupId = 1; 
+
+    this.http
+      .post(`http://127.0.0.1:5000/add-recipe/${groupId}`, formData)
+      .subscribe(
+        {next:(response) => {
+          alert('Recipe added successfully!');
+          this.recipeForm.reset({
+            name: '',
+            ingredients: [],
+            instructions: '',
+            cookingTime: '',
+            difficultyLevel: 'Easy',
+            recipeType: 'Vegetarian',
+            public: true,
+          });
+        },
+        error:(error) => {
+          console.error('Error adding recipe:', error);
+          alert('Failed to add recipe!');
+        }}
+      );
   }
 }

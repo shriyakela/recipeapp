@@ -64,7 +64,7 @@ export class GroupListComponent implements OnInit {
   //   //   }
   //   // );
   // }
-  groups: Group[] = [];
+  groups: Groupi[] = [];
   recipes:Recipe[] = []
   publicGroups: Groupi[] = []; // Array to hold public groups
   publicRecipes: Recipe[] = []; // Array to hold public recipes
@@ -79,11 +79,10 @@ export class GroupListComponent implements OnInit {
   ngOnInit() {
     this.loadPublicGroups(); // Load public groups when component initializes
     if(this.router.url === '/home'){
-      // this.groups = this.publicGroups;
-      // this.groups = this.publicGroups
-      this.groupService.getGroups().subscribe(res=>{
-        this.groups = res;
-      })
+      this.groups = this.publicGroups;
+      // this.groupService.getGroups().subscribe(res=>{
+      //   this.groups = res;
+      // })
       this.recipes = this.publicRecipes;
     }
   }

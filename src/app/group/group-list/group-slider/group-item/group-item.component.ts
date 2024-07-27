@@ -15,13 +15,14 @@ interface Groupi {
 })
 export class GroupItemComponent {
   constructor(private grouService:GroupService, private router:Router){}
-  @Input() group!: Group;
+  @Input() group!: Groupi;
   ngOnInit(){
     console.log("group =  ",this.group);
   }
 
   onItemClicked(){
-    this.grouService.getGroup.next(this.group);
+    // this.grouService.getGroup.next(this.group);
+    this.grouService.getGroup(this.group)
     this.router.navigate(['/category-detail']);
   }
 }

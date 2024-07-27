@@ -2,7 +2,7 @@
 
 /* General Navbar Styling */
 .custom-navbar {
-    background-color: #e0f7fa; /* Pastel light cyan background */
+    background-color: #ffffff; /* Pastel light cyan background */
     padding: 1rem; /* Padding for spacing */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     transition: background-color 0.3s ease; /* Smooth transition for background color changes */

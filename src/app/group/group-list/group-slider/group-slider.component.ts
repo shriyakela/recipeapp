@@ -80,7 +80,9 @@ export class GroupSliderComponent {
 
   // Number of items visible in the slider
   itemsVisible: number = 5;
-
+  ngOnInit(){
+    console.log(this.groups)
+  }
   nextSlide() {
     if (this.currentIndex < this.groups.length - this.itemsVisible) {
       this.currentIndex++;

@@ -34,6 +34,7 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { GroupService } from '../group.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-group-start',
@@ -45,7 +46,8 @@ export class GroupStartComponent {
 
   constructor(
     private fb: FormBuilder,
-    private groupService: GroupService
+    private groupService: GroupService,
+    private router:Router
   ) {
     this.groupForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -60,6 +62,8 @@ export class GroupStartComponent {
       this.groupService.createGroup(groupData).subscribe(
         {next: response => {
           console.log('Group created successfully:', response);
+          this.groupForm.reset();
+          this.router.navigate(['/home'])
           // Handle success response, show success message, etc.
         },
         error: error => {

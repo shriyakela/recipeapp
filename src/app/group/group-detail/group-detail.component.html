@@ -3,10 +3,10 @@
       <div class="card-body">
         <div class="d-flex align-items-center justify-content-between mb-3">
           <div>
-            <h2 class="card-title">{{ group?.name }}</h2>
-            <p class="text-muted mb-0">Category Details</p>
+            <h2 class="card-title">{{ group.name }}</h2>
+            <!-- <p class="text-muted mb-0">Category Details</p> -->
           </div>
-          <button class="btn btn-primary">
+          <button class="btn btn-primary" type="button" (click)="toAddRecipe()">
             <i class="bi bi-plus-circle me-2"></i> New Recipe
           </button>
         </div>
@@ -14,14 +14,14 @@
         <div class="row">
           <div class="col-md-4">
             <img
-              src="{{ group?.imagePath || 'https://via.placeholder.com/150' }}"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTojWQ7KLh8l4Oein2ejKCOYwUM_NDSDOGvtQ&s"
               class="img-fluid rounded shadow-sm"
               alt="{{ group.name }}"
             />
           </div>
           <div class="col-md-8">
-            <h5 class="mt-3">Description</h5>
-            <p>{{ group?.description }}</p>
+            <!-- <h5 class="mt-3">Description</h5> -->
+            <p>{{ group.description }}</p>
           </div>
         </div>
         <hr>
@@ -29,7 +29,7 @@
           <button class="btn btn-outline-secondary me-2">
             <i class="bi bi-pencil-square me-1"></i> Edit Category
           </button>
-          <button class="btn btn-outline-danger">
+          <button class="btn btn-outline-danger" type="button" (click)="deleteGroup(group.id)">
             <i class="bi bi-trash-fill me-1"></i> Delete Category
           </button>
         </div>
