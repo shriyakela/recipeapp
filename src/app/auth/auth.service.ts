@@ -19,6 +19,7 @@ interface AuthResponseData{
 })
 export class AuthService {
   user = new BehaviorSubject<User|null>(null);
+  isAuthenticated = new BehaviorSubject<boolean>(null);
   constructor(private http:HttpClient, private router:Router) { }
   apiUrl = "http://127.0.0.1:5000";
   // onLogin(email:string, password:string){
@@ -35,11 +36,11 @@ export class AuthService {
   onLogin(email: string, password: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, { email, password }).pipe(
       tap(response => {
-        // if (response.access_token) {
-        //   localStorage.setItem('authToken', response.access_token);
-        //   // const user = new User(response.email, response.username);
-        //   // this.user.next(user);
-        // }
+        if (response.access_token) {
+          localStorage.setItem('authToken', response.access_token);
+          const user = new User(response.email, response.username);
+          this.user.next(user);
+        }
       })
     );
   }

@@ -24,6 +24,7 @@ export class HeaderComponent {
   ngOnInit(){
     this.userSub = this.authService.user.subscribe(user =>{
       this.isAuthenticated = !!user;
+      this.authService.isAuthenticated.next(!!user);
       // console.log(!user);
       console.log("user authentication status: ",!!user);
     });

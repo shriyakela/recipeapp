@@ -6,6 +6,8 @@ import { HomeComponent } from './home/home.component';
 import { GroupComponent } from './group/group.component';
 import { MyrecipesComponent } from './myrecipes/myrecipes.component';
 import { GroupStartComponent } from './group/group-start/group-start.component';
+import { GroupDetailComponent } from './group/group-detail/group-detail.component';
+import { NewRecipeComponent } from './group/group-detail/recipes/new-recipe/new-recipe.component';
 
 const routes: Routes = [
   {path: '', redirectTo: '', pathMatch:"full"},
@@ -15,7 +17,9 @@ const routes: Routes = [
   {path: 'recipes', component: AppComponent},
   {path:'shopping-list', component: AppComponent},
   {path:'auth', component: AuthComponent},
-  {path: 'create', component: GroupStartComponent}
+  {path: 'create-group', component: GroupStartComponent},
+  {path: 'category-detail', component: GroupDetailComponent},
+  {path: 'add-recipe', component:NewRecipeComponent}
 ];
 
 @NgModule({

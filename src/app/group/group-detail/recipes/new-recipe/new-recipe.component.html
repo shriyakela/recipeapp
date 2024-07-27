@@ -1,1 +1,111 @@
-<p>new-recipe works!</p>
+<h1>Add Recipe</h1>
+<form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <label for="name">Recipe Name:</label>
+    <input
+      type="text"
+      id="name"
+      formControlName="name"
+      class="form-control"
+      required
+    />
+  </div>
+
+  <div id="ingredient-container">
+    <div
+      class="ingredient-item"
+      formArrayName="ingredients"
+      *ngFor="let ingredient of ingredients.controls; let i = index"
+    >
+      <input
+        type="text"
+        placeholder="Quantity"
+        [formControlName]="i"
+        class="form-control"
+        required
+      />
+      <input
+        type="text"
+        placeholder="Ingredient Name"
+        [formControlName]="i"
+        class="form-control"
+        required
+      />
+      <button type="button" (click)="removeIngredient(i)">
+        Remove Ingredient
+      </button>
+    </div>
+  </div>
+  <button type="button" (click)="addIngredient()">Add Ingredient</button>
+
+  <div class="form-group">
+    <label for="instructions">Instructions:</label>
+    <textarea
+      id="instructions"
+      formControlName="instructions"
+      class="form-control"
+      required
+    ></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="recipeImage">Recipe Image:</label>
+    <input
+      type="file"
+      id="recipeImage"
+      (change)="onFileSelected($event)"
+      class="form-control-file"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="cookingTime">Cooking Time (minutes):</label>
+    <input
+      type="number"
+      id="cookingTime"
+      formControlName="cookingTime"
+      class="form-control"
+      required
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="difficultyLevel">Difficulty Level:</label>
+    <select
+      id="difficultyLevel"
+      formControlName="difficultyLevel"
+      class="form-control"
+      required
+    >
+      <option value="Easy">Easy</option>
+      <option value="Medium">Medium</option>
+      <option value="Hard">Hard</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="recipeType">Recipe Type:</label>
+    <select
+      id="recipeType"
+      formControlName="recipeType"
+      class="form-control"
+      required
+    >
+      <option value="Vegetarian">Vegetarian</option>
+      <option value="Non-Vegetarian">Non-Vegetarian</option>
+      <option value="Vegan">Vegan</option>
+    </select>
+  </div>
+
+  <div class="form-check mb-3">
+    <input
+      class="form-check-input"
+      type="checkbox"
+      id="public"
+      formControlName="public"
+    />
+    <label class="form-check-label" for="public">Public Recipe</label>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Add Recipe</button>
+</form>

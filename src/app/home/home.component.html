@@ -1,36 +1,56 @@
 
-<!-- <div *ngIf="isAuthenticated">
-    <p>Slider to be added - after auth</p>
-</div> -->
-<!-- <div *ngIf="!isAuthenticated">
-    <p>Slider to be added - before auth</p>
-</div> -->
-
-<div class="container-fluid">
-    <div class="row mt-5">
-        <div class="col-xs-12 text-center">
-            <form>
-                <div class="search-container">
-                    <input type="text" class="search-input" placeholder="Search your favorite recipes here!">
-                    <button class="search-button">
-                      <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="search-icon" class="search-icon">
-                    </button>
-                  </div>
-            </form>
+<div *ngIf="isAuthenticated">
+    <div class="container-fluid home-container">
+        <div class="row pt-5">
+            <div class="col-xs-12 text-center">
+                <form>
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Search your favorite recipes here!">
+                        <button class="search-button">
+                          <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="search-icon" class="search-icon">
+                        </button>
+                      </div>
+                </form>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-xs-12 text-center mt-4">
+                <h3>Welcome to Recipe Haven!</h3>
+                <div class="mx-5 px-5">
+                    <p class="mx-5 px-5 mt-2">Unleash your inner chef with Recipe Haven! Whether you're a pro in the kitchen or a novice, our vast collection of recipes caters to every taste. Discover culinary delights, craft unforgettable dishes, and connect with food lovers worldwide. Ignite your culinary creativity today!</p>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row mt-5">
-        <div class="col-xs-12 text-center mt-4">
-            <h3>Welcome to Recipe Haven!</h3>
-            <div class="mx-5 px-5">
-                <p class="mx-5 px-5 mt-2">Unleash your inner chef with Recipe Haven! Whether you're a pro in the kitchen or a novice, our vast collection of recipes caters to every taste. Discover culinary delights, craft unforgettable dishes, and connect with food lovers worldwide. Ignite your culinary creativity today!</p>
+    
+    <div class="py-5 my-5">
+      
+        <app-group-list></app-group-list>
+         
+    </div>
+</div>
+<div *ngIf="!isAuthenticated">
+    <div class="container-fluid home-container">
+        <div class="row pt-5">
+            <!-- <div class="col-xs-12 text-center">
+                <form>
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Search your favorite recipes here!">
+                        <button class="search-button">
+                          <img src="https://cdn-icons-png.flaticon.com/512/622/622669.png" alt="search-icon" class="search-icon">
+                        </button>
+                      </div>
+                </form>
+            </div> -->
+        </div>
+        <div class="row mt-5">
+            <div class="col-xs-12 text-center mt-4">
+                <h3>Welcome to Recipe Haven!</h3>
+                <div class="mx-5 px-5">
+                    <p class="mx-5 px-5 mt-2">Unleash your inner chef with Recipe Haven! Whether you're a pro in the kitchen or a novice, our vast collection of recipes caters to every taste. Discover culinary delights, craft unforgettable dishes, and connect with food lovers worldwide. Ignite your culinary creativity today!</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="py-5 my-5">
-  
-            <app-group-list></app-group-list>
-     
-</div>

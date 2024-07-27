@@ -1,12 +1,14 @@
 <div class="group-item">
   
     <div class="group-image-container">
-      <a style="cursor: pointer;">
-        <img [src]="group.imagePath" [alt]="group.name" class="group-image" />
+      <a style="cursor: pointer;" (click) = "onItemClicked()">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTojWQ7KLh8l4Oein2ejKCOYwUM_NDSDOGvtQ&s"
+        [alt]="group.name" class="group-image" />
       </a>
     </div>
     <div class="group-info">
       <h4 class="group-name">{{ group.name }}</h4>
     </div>
   </div>
+
   
