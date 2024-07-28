@@ -13,11 +13,11 @@
     {% for recipe in recipes %}
     <div class="recipe-card">
         <h3>{{ recipe.recipe }}</h3>
-        {% if recipe_image_url %}
-        <img src="{{ url_for('static', filename='uploads/' + recipe_image_url) }}" alt="Recipe Image">
+        {% if recipe.image_path %}
+        <img src="http://127.0.0.1:5000/static/{{recipe.image_path }}" alt="{{ recipe.recipe }}" class="img-fluid">
     {% endif %}
-        <p>{{ recipe.ingredients }}</p>
-        <p>{{ recipe.instructions }}</p>
+        <!-- <p>{{ recipe.ingredients }}</p>
+        <p>{{ recipe.instructions }}</p> -->
         {% if recipe.user_id == current_user.id %}
         <a href="{{ url_for('views.edit_recipe', recipe_id=recipe.id) }}" class="btn btn-warning">Edit</a>
         <form action="{{ url_for('views.delete_recipe', recipe_id=recipe.id) }}" method="POST" style="display:inline;">
